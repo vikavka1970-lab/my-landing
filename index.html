@@ -854,6 +854,136 @@ footer {
   .footer-links { display: none; }
 }
 
+/* ─── BACK TO TOP BUTTON ────────────────────────────────── */
+#backToTop {
+  position: fixed; bottom: 28px; right: 28px; z-index: 150;
+  width: 48px; height: 48px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent), #4f46e5);
+  border: none; cursor: pointer; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transform: translateY(16px) scale(0.9);
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.34,1.56,0.64,1),
+              box-shadow 0.3s;
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(99,102,241,0.35);
+}
+#backToTop.visible {
+  opacity: 1; transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+#backToTop:hover {
+  box-shadow: 0 0 28px rgba(99,102,241,0.6), 0 8px 24px rgba(99,102,241,0.3);
+  transform: translateY(-3px) scale(1.05);
+}
+#backToTop:active { transform: scale(0.95); }
+#backToTop svg { transition: transform 0.25s ease; }
+#backToTop:hover svg { transform: translateY(-2px); }
+
+/* ─── FORM ANIMATION ────────────────────────────────────── */
+.form-success {
+  display: none; text-align: center; padding: 40px 28px;
+  animation: successReveal 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes successReveal {
+  from { opacity:0; transform: scale(0.85) translateY(16px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+.success-circle {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(6,182,212,0.15));
+  border: 2px solid rgba(99,102,241,0.3);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px; font-size: 36px;
+  animation: circlePop 0.5s 0.2s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes circlePop {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+.success-confetti {
+  display: flex; justify-content: center; gap: 6px; margin-top: 16px;
+}
+.confetti-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  animation: confettiFloat 0.6s ease both;
+}
+.confetti-dot:nth-child(1) { background: var(--accent); animation-delay: 0.3s; }
+.confetti-dot:nth-child(2) { background: var(--cyan);   animation-delay: 0.4s; }
+.confetti-dot:nth-child(3) { background: #a78bfa;       animation-delay: 0.5s; }
+.confetti-dot:nth-child(4) { background: var(--cyan);   animation-delay: 0.45s; }
+.confetti-dot:nth-child(5) { background: var(--accent); animation-delay: 0.35s; }
+@keyframes confettiFloat {
+  from { opacity:0; transform: translateY(10px) scale(0); }
+  to   { opacity:1; transform: translateY(0)    scale(1); }
+}
+
+/* Input typing effect */
+.form-group input:focus + .input-bar,
+.form-group textarea:focus + .input-bar {
+  transform: scaleX(1);
+}
+
+/* ─── MOBILE MENU IMPROVED ──────────────────────────────── */
+.mobile-menu {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.45s cubic-bezier(0.22,1,0.36,1),
+              opacity 0.35s ease;
+  opacity: 0;
+  display: flex; flex-direction: column;
+  border-top: 0px solid rgba(99,102,241,0.12);
+}
+.mobile-menu.open {
+  max-height: 400px; opacity: 1;
+  border-top-width: 1px;
+}
+.mobile-menu a {
+  padding: 14px 24px;
+  border-bottom: 1px solid rgba(99,102,241,0.06);
+  transform: translateX(-12px); opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease, color 0.2s;
+}
+.mobile-menu.open a {
+  transform: translateX(0); opacity: 1;
+}
+.mobile-menu.open a:nth-child(1) { transition-delay: 0.05s; }
+.mobile-menu.open a:nth-child(2) { transition-delay: 0.10s; }
+.mobile-menu.open a:nth-child(3) { transition-delay: 0.15s; }
+.mobile-menu.open a:nth-child(4) { transition-delay: 0.20s; }
+.mobile-menu.open a:nth-child(5) { transition-delay: 0.25s; }
+.mobile-menu .btn { margin: 16px 24px; transition-delay: 0.30s !important; }
+
+/* ─── SPINNER ───────────────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── MOBILE IMPROVEMENTS ──────────────────────────────── */
+@media (max-width: 480px) {
+  section { padding: 72px 0; }
+  .hero h1 { font-size: 38px; }
+  .hero-tagline { font-size: 16px; }
+  .hero-btns { flex-direction: column; }
+  .hero-btns .btn { justify-content: center; }
+  .services-grid { grid-template-columns: 1fr; }
+  .process-grid  { grid-template-columns: 1fr; }
+  .values-grid   { grid-template-columns: 1fr; }
+  .faq-q { font-size: 14px; padding: 18px 20px; }
+  .faq-a-inner { padding: 0 20px 18px; }
+  .contact-form { padding: 24px; }
+  #backToTop { bottom: 20px; right: 20px; width: 44px; height: 44px; }
+}
+
+/* Touch tap highlights off */
+* { -webkit-tap-highlight-color: transparent; }
+
+/* Better touch targets */
+@media (pointer: coarse) {
+  .btn { padding: 16px 28px; min-height: 52px; }
+  .faq-q { min-height: 56px; }
+  .nav-links a { padding: 8px 0; }
+  .mobile-menu a { padding: 16px 24px; }
+}
+
 /* ─── SECTION DIVIDER ───────────────────────────────────── */
 .divider {
   height: 1px;
@@ -1480,15 +1610,29 @@ footer {
           </form>
 
           <div class="form-success" id="formSuccess">
-            <div class="success-icon">✅</div>
+            <div class="success-circle">✓</div>
             <h3>Заявка отправлена!</h3>
-            <p>Отвечу в течение 24 часов. Спасибо, что написали — скоро свяжусь.</p>
+            <p style="color:var(--muted);font-size:15px;margin-top:8px;">Отвечу в течение 24 часов. Спасибо, что написали — скоро свяжусь.</p>
+            <div class="success-confetti">
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- Back to top -->
+<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Наверх">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+    <path d="M12 19V5M5 12l7-7 7 7"/>
+  </svg>
+</button>
 
 <!-- ═══════════════════════════════════════════════════════
      FOOTER
@@ -1515,14 +1659,17 @@ footer {
 ═══════════════════════════════════════════════════════ -->
 <script>
 
-// ─── NAV scroll + progress bar ───────────────────────────
+// ─── NAV scroll + progress bar + back-to-top ────────────
 const nav = document.getElementById('nav');
 const progressBar = document.getElementById('scrollProgress');
+const backToTop = document.getElementById('backToTop');
 
 window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 50);
-  const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  const y = window.scrollY;
+  nav.classList.toggle('scrolled', y > 50);
+  const pct = (y / (document.body.scrollHeight - window.innerHeight)) * 100;
   progressBar.style.width = pct + '%';
+  backToTop.classList.toggle('visible', y > 400);
 }, { passive: true });
 
 // ─── Burger menu ─────────────────────────────────────────
@@ -1569,14 +1716,24 @@ function toggleFaq(btn) {
 function handleSubmit(e) {
   e.preventDefault();
   const btn = document.getElementById('submitBtn');
-  btn.textContent = 'Отправляю...';
-  btn.disabled = true;
+  const form = document.getElementById('contactForm');
+  const success = document.getElementById('formSuccess');
 
-  // Simulate send (replace with Formspree/Resend)
+  // Sending state
+  btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 0.8s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Отправляю...';
+  btn.disabled = true;
+  btn.style.opacity = '0.75';
+
   setTimeout(() => {
-    document.getElementById('contactForm').style.display = 'none';
-    document.getElementById('formSuccess').style.display = 'block';
-  }, 1200);
+    // Collapse form smoothly
+    form.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+    form.style.opacity = '0';
+    form.style.transform = 'scale(0.96)';
+    setTimeout(() => {
+      form.style.display = 'none';
+      success.style.display = 'block';
+    }, 400);
+  }, 1400);
 }
 
 // ─── Custom cursor ───────────────────────────────────────
