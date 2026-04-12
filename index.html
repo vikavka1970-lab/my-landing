@@ -268,8 +268,12 @@ section { padding: 100px 0; }
   pointer-events: none;
 }
 @media (max-width: 900px) {
-  .hero-inner { grid-template-columns: 1fr; }
-  .hero-photo { display: none; }
+  .hero-inner { grid-template-columns: 1fr; gap: 32px; }
+  .hero-photo {
+    width: 160px; height: 160px; border-radius: 50%;
+    margin: 0 auto; order: -1;
+  }
+  .hero-photo::after { display: none; }
 }
 
 .hero-badge {
@@ -1371,7 +1375,7 @@ footer {
       <!-- Цитата-акцент -->
       <div class="about-quote">
         Прошла путь от продавца до администратора магазина —
-        теперь строю <span>цифровые инструменты для бизнеса</span>, которых сама не хватало.
+        теперь строю <span>цифровые инструменты для бизнеса</span>, которых мне самой не хватало.
       </div>
 
       <!-- Текст в 2 колонки -->
