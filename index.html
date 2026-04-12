@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Виктория Полтавченко — создаю сайты и внедряю AI-автоматизацию для бизнеса</title>
+<meta name="description" content="Сайты под ключ, мобильные приложения и ИИ-агенты для бизнеса. Один специалист — вся цифровая экосистема.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&family=Syne+Mono&display=swap" rel="stylesheet">
+<style>
+
+/* ─── RESET & BASE ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #0F172A;
+  --surface:  #1E293B;
+  --border:   #334155;
+  --accent:   #6366F1;
+  --cyan:     #06B6D4;
+  --text:     #F1F5F9;
+  --muted:    #94A3B8;
+  --radius:   16px;
+  --font-h:   'Syne', sans-serif;
+  --font-b:   'DM Sans', sans-serif;
+  --font-m:   'Syne Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-b);
+  font-size: 16px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ─── CURSOR ────────────────────────────────────────────── */
+.cursor-dot, .cursor-ring {
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+}
+.cursor-dot  { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+.cursor-ring { width: 32px; height: 32px; border: 1.5px solid rgba(99,102,241,0.5); border-radius: 50%; transition: width 0.2s, height 0.2s, transform 0.08s; }
+@media (pointer: coarse) { .cursor-dot, .cursor-ring { display: none; } }
+
+/* ─── TYPOGRAPHY ────────────────────────────────────────── */
+h1,h2,h3,h4 { font-family: var(--font-h); line-height: 1.1; }
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--cyan) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.label {
+  font-family: var(--font-h);
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--cyan);
+}
+
+/* ─── LAYOUT ────────────────────────────────────────────── */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+section { padding: 100px 0; }
+
+/* ─── GLASS ─────────────────────────────────────────────── */
+.glass {
+  background: rgba(30,41,59,0.55);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(99,102,241,0.12);
+  border-radius: var(--radius);
+}
+
+/* ─── BUTTONS ───────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px; border-radius: 12px;
+  font-family: var(--font-h); font-size: 15px; font-weight: 600;
+  cursor: pointer; text-decoration: none;
+  transition: all 0.25s ease; border: none; white-space: nowrap;
+}
+.btn-primary {
+  background: var(--accent); color: #fff;
+}
+.btn-primary:hover {
+  background: #4f51e0;
+  box-shadow: 0 0 28px rgba(99,102,241,0.5), 0 0 56px rgba(99,102,241,0.2);
+  transform: translateY(-1px);
+}
+.btn-ghost {
+  background: transparent; color: var(--text);
+  border: 1px solid rgba(99,102,241,0.35);
+}
+.btn-ghost:hover {
+  border-color: rgba(99,102,241,0.7);
+  background: rgba(99,102,241,0.06);
+  transform: translateY(-1px);
+}
+.btn svg { flex-shrink: 0; }
+
+/* ─── FADE ANIMATIONS ───────────────────────────────────── */
+.fade-up {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+.fade-up:nth-child(2) { transition-delay: 0.1s; }
+.fade-up:nth-child(3) { transition-delay: 0.2s; }
+.fade-up:nth-child(4) { transition-delay: 0.3s; }
+
+/* ─── NAV ───────────────────────────────────────────────── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 20px 0; transition: all 0.3s ease;
+}
+.nav.scrolled {
+  padding: 12px 0;
+  background: rgba(15,23,42,0.85);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(99,102,241,0.1);
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  font-family: var(--font-h); font-size: 20px; font-weight: 800;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--cyan) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-links {
+  display: flex; align-items: center; gap: 32px; list-style: none;
+}
+.nav-links a {
+  font-family: var(--font-h); font-size: 14px; font-weight: 600;
+  color: var(--muted); text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-cta { margin-left: 16px; }
+
+.burger {
+  display: none; flex-direction: column; gap: 5px;
+  cursor: pointer; padding: 4px; background: none; border: none;
+}
+.burger span {
+  display: block; width: 24px; height: 2px;
+  background: var(--text); border-radius: 2px;
+  transition: all 0.3s ease;
+}
+.burger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.burger.open span:nth-child(2) { opacity: 0; }
+.burger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+.mobile-menu {
+  display: none; flex-direction: column; gap: 0;
+  border-top: 1px solid rgba(99,102,241,0.12);
+  padding: 16px 0;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-family: var(--font-h); font-size: 15px; font-weight: 600;
+  color: var(--muted); text-decoration: none;
+  padding: 12px 24px; transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--text); }
+.mobile-menu .btn { margin: 12px 24px 0; justify-content: center; }
+
+@media (max-width: 768px) {
+  .nav-links, .nav-cta { display: none; }
+  .burger { display: flex; }
+}
+
+/* ─── HERO ──────────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center;
+  position: relative; overflow: hidden;
+  padding: 140px 0 80px;
+}
+
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 15% 25%, rgba(99,102,241,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 50% at 85% 75%, rgba(6,182,212,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 40% at 65% 10%, rgba(99,102,241,0.08) 0%, transparent 55%),
+    var(--bg);
+  animation: auroraShift 12s ease-in-out infinite alternate;
+}
+@keyframes auroraShift {
+  0%   { filter: hue-rotate(0deg) brightness(1); }
+  100% { filter: hue-rotate(15deg) brightness(1.05); }
+}
+
+/* Grid dots overlay */
+.hero-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(99,102,241,0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.hero-content { position: relative; z-index: 1; max-width: 760px; }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border-radius: 50px;
+  font-size: 13px; font-family: var(--font-h); font-weight: 600;
+  color: var(--muted); margin-bottom: 32px;
+  background: rgba(30,41,59,0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(6,182,212,0.2);
+  animation: fadeDown 0.8s ease forwards;
+}
+.badge-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--cyan);
+  animation: pulseDot 2.5s ease-in-out infinite;
+}
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.7); }
+}
+
+.hero h1 {
+  font-size: clamp(44px, 7vw, 80px);
+  font-weight: 800; letter-spacing: -0.03em;
+  line-height: 1.02; margin-bottom: 8px;
+  animation: fadeUp 0.8s 0.1s ease both;
+}
+.hero-tagline {
+  font-family: var(--font-h); font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 600; color: var(--muted);
+  margin-bottom: 20px;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+.hero-sub {
+  font-size: clamp(15px, 1.8vw, 18px);
+  color: var(--muted); line-height: 1.75;
+  max-width: 540px; margin-bottom: 40px;
+  animation: fadeUp 0.8s 0.3s ease both;
+}
+.hero-btns {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  animation: fadeUp 0.8s 0.4s ease both;
+}
+
+/* Orbs */
+.orb {
+  position: absolute; border-radius: 50%;
+  pointer-events: none; z-index: 0;
+}
+.orb-1 {
+  width: 400px; height: 400px;
+  top: 10%; right: 5%;
+  background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+  animation: orbFloat 8s ease-in-out infinite alternate;
+}
+.orb-2 {
+  width: 280px; height: 280px;
+  bottom: 15%; right: 25%;
+  background: radial-gradient(circle, rgba(6,182,212,0.07) 0%, transparent 70%);
+  animation: orbFloat 10s 2s ease-in-out infinite alternate-reverse;
+}
+@keyframes orbFloat {
+  from { transform: translateY(0) scale(1); }
+  to   { transform: translateY(-30px) scale(1.05); }
+}
+
+.scroll-hint {
+  position: absolute; bottom: 32px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px; color: var(--muted); font-size: 11px;
+  font-family: var(--font-m); letter-spacing: 0.1em;
+  animation: fadeUp 1s 0.8s ease both;
+}
+.scroll-line {
+  width: 1px; height: 36px;
+  background: linear-gradient(to bottom, var(--muted), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── STATS BAR ─────────────────────────────────────────── */
+.stats-bar {
+  padding: 28px 0;
+  border-top: 1px solid rgba(99,102,241,0.1);
+  border-bottom: 1px solid rgba(99,102,241,0.1);
+  background: rgba(30,41,59,0.3);
+}
+.stats-inner {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; flex-wrap: wrap;
+}
+.stat-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 32px;
+}
+.stat-item + .stat-item {
+  border-left: 1px solid var(--border);
+}
+.stat-num {
+  font-family: var(--font-h); font-size: 26px; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label { font-size: 13px; color: var(--muted); font-weight: 500; }
+@media (max-width: 640px) {
+  .stat-item + .stat-item { border-left: none; border-top: 1px solid var(--border); }
+  .stats-inner { flex-direction: column; }
+}
+
+/* ─── SERVICES ──────────────────────────────────────────── */
+.section-header { text-align: center; margin-bottom: 60px; }
+.section-header h2 {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800; letter-spacing: -0.02em;
+  margin-top: 12px;
+}
+
+.services-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+.service-card {
+  padding: 36px 32px; cursor: default;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  position: relative; overflow: hidden;
+}
+.service-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(99,102,241,0.35);
+}
+.service-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.service-card:hover::before { opacity: 1; }
+
+.service-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 24px; font-size: 26px;
+  background: rgba(99,102,241,0.1);
+}
+.service-card:nth-child(2) .service-icon { background: rgba(6,182,212,0.1); }
+.service-card:nth-child(3) .service-icon { background: rgba(99,102,241,0.1); }
+
+.service-card h3 {
+  font-size: 22px; font-weight: 700; margin-bottom: 12px;
+}
+.service-card p {
+  font-size: 15px; color: var(--muted); line-height: 1.7;
+  margin-bottom: 24px;
+}
+.service-bullets {
+  list-style: none; display: flex; flex-direction: column; gap: 8px;
+}
+.service-bullets li {
+  font-size: 14px; color: var(--muted);
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.service-bullets li::before {
+  content: ''; display: block; flex-shrink: 0;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); margin-top: 6px;
+}
+.service-card:nth-child(2) .service-bullets li::before { background: var(--cyan); }
+
+.services-cta {
+  text-align: center; margin-top: 48px;
+  padding: 28px 32px; border-radius: var(--radius);
+  background: rgba(99,102,241,0.06);
+  border: 1px solid rgba(99,102,241,0.15);
+}
+.services-cta p {
+  font-size: 16px; color: var(--muted); margin-bottom: 0;
+  font-family: var(--font-h); font-weight: 600;
+}
+.services-cta span { color: var(--text); }
+
+/* ─── PORTFOLIO ─────────────────────────────────────────── */
+.portfolio { background: rgba(30,41,59,0.2); }
+
+.portfolio-grid {
+  display: grid; gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+}
+.portfolio-card {
+  padding: 32px; cursor: default;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.portfolio-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(99,102,241,0.35);
+}
+.portfolio-card:first-child {
+  grid-column: 1 / -1;
+}
+
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+}
+.card-type {
+  font-family: var(--font-m); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 50px;
+  background: rgba(99,102,241,0.12); color: var(--accent);
+}
+.card-status {
+  font-size: 12px; color: var(--muted);
+  padding: 5px 12px; border-radius: 50px;
+  border: 1px solid var(--border);
+}
+.portfolio-card h3 {
+  font-size: clamp(18px, 2.5vw, 22px); font-weight: 700;
+  margin-bottom: 12px;
+}
+.portfolio-card p {
+  font-size: 15px; color: var(--muted); line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+/* Mockup placeholder */
+.mockup {
+  width: 100%; border-radius: 12px; overflow: hidden;
+  margin-bottom: 24px; position: relative;
+  background: var(--bg); border: 1px solid var(--border);
+}
+.mockup-bar {
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(99,102,241,0.05);
+}
+.mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+.mockup-dot:nth-child(1) { background: #FF5F57; }
+.mockup-dot:nth-child(2) { background: #FFBD2E; }
+.mockup-dot:nth-child(3) { background: #28CA41; }
+.mockup-url {
+  flex: 1; height: 20px; border-radius: 4px;
+  background: rgba(255,255,255,0.04); margin-left: 8px;
+}
+.mockup-screen {
+  height: 160px; position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(6,182,212,0.05));
+}
+.mockup-placeholder {
+  text-align: center; color: var(--muted);
+}
+.mockup-placeholder .icon { font-size: 36px; margin-bottom: 8px; }
+.mockup-placeholder span { font-size: 13px; font-family: var(--font-m); }
+
+.stack-tags {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.tag {
+  font-size: 12px; color: var(--muted);
+  padding: 4px 12px; border-radius: 6px;
+  border: 1px solid var(--border);
+  font-family: var(--font-m);
+}
+
+.portfolio-coming {
+  text-align: center; margin-top: 32px;
+  font-size: 14px; color: var(--muted);
+}
+.portfolio-coming span {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-radius: 50px;
+  border: 1px dashed rgba(99,102,241,0.3);
+}
+
+@media (max-width: 640px) {
+  .portfolio-grid { grid-template-columns: 1fr; }
+  .portfolio-card:first-child { grid-column: auto; }
+}
+
+/* ─── ABOUT ─────────────────────────────────────────────── */
+.about-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+  align-items: center;
+}
+.about-photo-wrap { position: relative; }
+.about-photo {
+  width: 100%; max-width: 380px;
+  aspect-ratio: 4/5; border-radius: 24px;
+  position: relative; overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.photo-placeholder {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px; color: var(--muted);
+}
+.photo-placeholder .ph-icon { font-size: 56px; opacity: 0.3; }
+.photo-placeholder span { font-size: 14px; opacity: 0.5; }
+
+.photo-deco-1, .photo-deco-2 {
+  position: absolute; border-radius: 16px; z-index: -1;
+}
+.photo-deco-1 {
+  width: 120px; height: 120px;
+  border: 1px solid rgba(99,102,241,0.2);
+  bottom: -16px; right: -16px;
+}
+.photo-deco-2 {
+  width: 80px; height: 80px;
+  border: 1px solid rgba(6,182,212,0.2);
+  top: -16px; left: -16px;
+}
+
+.about-text h2 {
+  font-size: clamp(32px, 4.5vw, 44px);
+  font-weight: 800; margin-top: 12px; margin-bottom: 28px;
+  letter-spacing: -0.02em;
+}
+.about-text p {
+  font-size: 16px; color: var(--muted); line-height: 1.8;
+  margin-bottom: 18px;
+}
+
+.values-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin-top: 32px;
+}
+.value-card {
+  padding: 18px 20px;
+  border-radius: 12px;
+  background: rgba(30,41,59,0.5);
+  border: 1px solid rgba(99,102,241,0.1);
+}
+.value-label {
+  font-family: var(--font-h); font-size: 13px; font-weight: 700;
+  color: var(--accent); margin-bottom: 4px;
+}
+.value-desc { font-size: 12px; color: var(--muted); }
+
+@media (max-width: 768px) {
+  .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  .about-photo { max-width: 100%; aspect-ratio: 3/2; }
+  .photo-placeholder .ph-icon { font-size: 40px; }
+}
+
+/* ─── PROCESS ───────────────────────────────────────────── */
+.process { background: rgba(30,41,59,0.15); }
+.process-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+  position: relative;
+}
+.process-grid::before {
+  content: '';
+  position: absolute;
+  top: 44px; left: calc(12.5% + 10px); right: calc(12.5% + 10px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--cyan), transparent);
+  opacity: 0.4;
+}
+.step-card {
+  padding: 28px 24px;
+  text-align: center;
+  position: relative;
+  background: rgba(30,41,59,0.5);
+  border: 1px solid rgba(99,102,241,0.1);
+  border-radius: var(--radius);
+  transition: transform 0.3s, border-color 0.3s;
+}
+.step-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(99,102,241,0.3);
+}
+.step-num {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(6,182,212,0.2));
+  border: 1px solid rgba(99,102,241,0.3);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  font-family: var(--font-h); font-size: 15px; font-weight: 800;
+  color: var(--accent); position: relative; z-index: 1;
+}
+.step-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+.step-card p  { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+@media (max-width: 768px) {
+  .process-grid { grid-template-columns: 1fr 1fr; }
+  .process-grid::before { display: none; }
+}
+@media (max-width: 480px) {
+  .process-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── TESTIMONIALS ──────────────────────────────────────── */
+.testimonials-placeholder {
+  text-align: center; padding: 60px 32px;
+  border-radius: var(--radius);
+  border: 1px dashed rgba(99,102,241,0.25);
+  max-width: 560px; margin: 0 auto;
+}
+.testimonials-placeholder .icon { font-size: 48px; margin-bottom: 16px; }
+.testimonials-placeholder h3 {
+  font-size: 22px; font-weight: 700; margin-bottom: 12px;
+}
+.testimonials-placeholder p { font-size: 15px; color: var(--muted); }
+
+/* ─── FAQ ───────────────────────────────────────────────── */
+.faq { background: rgba(30,41,59,0.2); }
+.faq-list {
+  max-width: 760px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.faq-item {
+  border-radius: 14px;
+  border: 1px solid rgba(99,102,241,0.12);
+  background: rgba(30,41,59,0.4);
+  overflow: hidden;
+}
+.faq-q {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 28px; cursor: pointer;
+  background: none; border: none; color: var(--text);
+  font-family: var(--font-h); font-size: 16px; font-weight: 600;
+  text-align: left; gap: 16px;
+  transition: background 0.2s;
+}
+.faq-q:hover { background: rgba(99,102,241,0.05); }
+.faq-icon {
+  width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%;
+  border: 1px solid rgba(99,102,241,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--accent);
+  transition: transform 0.3s, background 0.2s;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); background: rgba(99,102,241,0.15); }
+.faq-a {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+}
+.faq-a-inner {
+  padding: 0 28px 22px;
+  font-size: 15px; color: var(--muted); line-height: 1.75;
+}
+.faq-item.open .faq-a { max-height: 300px; }
+
+/* ─── CONTACTS ──────────────────────────────────────────── */
+.contacts-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+  align-items: start;
+}
+.contacts-info h2 {
+  font-size: clamp(32px, 4.5vw, 44px);
+  font-weight: 800; margin-top: 12px; margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+.contacts-info > p {
+  font-size: 16px; color: var(--muted); line-height: 1.75; margin-bottom: 32px;
+}
+
+.contact-link {
+  display: flex; align-items: center; gap: 16px;
+  padding: 18px 20px; border-radius: 14px;
+  margin-bottom: 12px; text-decoration: none;
+  border: 1px solid rgba(99,102,241,0.12);
+  background: rgba(30,41,59,0.4);
+  transition: transform 0.2s, border-color 0.2s;
+}
+.contact-link:hover {
+  transform: translateX(4px);
+  border-color: rgba(99,102,241,0.35);
+}
+.contact-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.contact-icon.tg  { background: rgba(99,102,241,0.12); }
+.contact-icon.em  { background: rgba(6,182,212,0.12); }
+.contact-title { font-family: var(--font-h); font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.contact-val   { font-size: 13px; color: var(--muted); }
+
+.availability {
+  margin-top: 24px; padding: 16px 20px; border-radius: 12px;
+  background: rgba(6,182,212,0.07);
+  border: 1px solid rgba(6,182,212,0.2);
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px; color: var(--muted); font-family: var(--font-h); font-weight: 600;
+}
+.availability-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); animation: pulseDot 2.5s infinite; }
+
+/* Form */
+.contact-form {
+  padding: 36px; border-radius: var(--radius);
+}
+.form-group { margin-bottom: 18px; }
+.form-group label {
+  display: block; font-family: var(--font-h); font-size: 13px; font-weight: 600;
+  margin-bottom: 8px; color: var(--text);
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%; padding: 13px 16px; border-radius: 12px;
+  background: rgba(15,23,42,0.8);
+  border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-b); font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+}
+.form-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394A3B8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 16px center;
+  padding-right: 40px; cursor: pointer;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: var(--muted); }
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: rgba(99,102,241,0.6);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+}
+.form-group textarea { resize: vertical; min-height: 110px; }
+.form-group select option { background: #1E293B; color: var(--text); }
+
+.form-submit {
+  width: 100%; padding: 16px;
+  font-size: 16px;
+}
+
+.form-success {
+  display: none; text-align: center; padding: 32px;
+}
+.form-success .success-icon { font-size: 48px; margin-bottom: 12px; }
+.form-success h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.form-success p  { font-size: 15px; color: var(--muted); }
+
+@media (max-width: 768px) {
+  .contacts-grid { grid-template-columns: 1fr; gap: 40px; }
+}
+
+/* ─── FOOTER ────────────────────────────────────────────── */
+footer {
+  padding: 32px 0;
+  border-top: 1px solid rgba(99,102,241,0.1);
+}
+.footer-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-logo {
+  font-family: var(--font-h); font-size: 15px; font-weight: 800;
+}
+.footer-links {
+  display: flex; gap: 24px; list-style: none;
+}
+.footer-links a {
+  font-size: 13px; color: var(--muted); text-decoration: none;
+  font-family: var(--font-h); font-weight: 600;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--text); }
+.footer-copy { font-size: 12px; color: var(--muted); }
+
+@media (max-width: 640px) {
+  .footer-inner { justify-content: center; text-align: center; }
+  .footer-links { display: none; }
+}
+
+/* ─── SECTION DIVIDER ───────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(99,102,241,0.2), transparent);
+}
+
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     NAV
+═══════════════════════════════════════════════════════ -->
+<nav class="nav" id="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo">ВП</a>
+      <ul class="nav-links">
+        <li><a href="#services">Услуги</a></li>
+        <li><a href="#portfolio">Портфолио</a></li>
+        <li><a href="#about">О себе</a></li>
+        <li><a href="#process">Процесс</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#contacts" class="btn btn-primary nav-cta" style="padding:10px 20px;font-size:14px;">Обсудить проект</a></li>
+      </ul>
+      <button class="burger" id="burger" aria-label="Меню">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#services"  onclick="closeMenu()">Услуги</a>
+      <a href="#portfolio" onclick="closeMenu()">Портфолио</a>
+      <a href="#about"     onclick="closeMenu()">О себе</a>
+      <a href="#process"   onclick="closeMenu()">Процесс</a>
+      <a href="#faq"       onclick="closeMenu()">FAQ</a>
+      <a href="#contacts" class="btn btn-primary" onclick="closeMenu()">Обсудить проект</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════ -->
+<section id="hero" class="hero">
+  <div class="hero-bg"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Открыта для новых проектов · Старт в мае
+      </div>
+
+      <h1>
+        Виктория<br>
+        <span class="text-gradient">Полтавченко</span>
+      </h1>
+
+      <p class="hero-tagline">
+        Создаю сайты и внедряю AI-автоматизацию для бизнеса
+      </p>
+
+      <p class="hero-sub">
+        Берёте у меня сайт — получаете готовый инструмент продаж.<br>
+        Внедряете AI-агента — освобождаете команду от рутины.
+      </p>
+
+      <div class="hero-btns">
+        <a href="#contacts" class="btn btn-primary">
+          Обсудить проект
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#portfolio" class="btn btn-ghost">Посмотреть работы</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>СКРОЛЛ</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     STATS BAR
+═══════════════════════════════════════════════════════ -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="stats-inner">
+      <div class="stat-item fade-up">
+        <div>
+          <div class="stat-num">2</div>
+          <div class="stat-label">Проекта запущено</div>
+        </div>
+      </div>
+      <div class="stat-item fade-up">
+        <div>
+          <div class="stat-num">1</div>
+          <div class="stat-label">AI-инструмент</div>
+        </div>
+      </div>
+      <div class="stat-item fade-up">
+        <div>
+          <div class="stat-num">24ч</div>
+          <div class="stat-label">Время ответа</div>
+        </div>
+      </div>
+      <div class="stat-item fade-up">
+        <div>
+          <div class="stat-num">3</div>
+          <div class="stat-label">Направления работы</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SERVICES
+═══════════════════════════════════════════════════════ -->
+<section id="services">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="label">Услуги</span>
+      <h2>Что я делаю</h2>
+    </div>
+
+    <div class="services-grid">
+      <!-- Card 1 -->
+      <div class="service-card glass fade-up">
+        <div class="service-icon">🌐</div>
+        <h3>Сайты под ключ</h3>
+        <p>Ваш сайт — ваш лучший сотрудник: работает 24/7 без перерывов. Проектирую и строю кастомные сайты, которые грузятся быстро, выглядят убедительно и ведут посетителя к действию.</p>
+        <ul class="service-bullets">
+          <li>Лендинги, корпоративные сайты, магазины</li>
+          <li>Дизайн под вашу аудиторию</li>
+          <li>Быстрая загрузка и мобильная версия</li>
+          <li>От брифа до запуска без головной боли</li>
+        </ul>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="service-card glass fade-up">
+        <div class="service-icon" style="background:rgba(6,182,212,0.1)">📱</div>
+        <h3>Приложения</h3>
+        <p>Мобильный продукт, которым пользуются каждый день. От идеи до запуска — один человек, который видит всю картину целиком.</p>
+        <ul class="service-bullets" style="--dot-color:var(--cyan)">
+          <li>Веб-приложения, PWA, MVP для стартапов</li>
+          <li>Быстрый старт — от идеи до прототипа</li>
+          <li>Готово к росту с первого дня</li>
+          <li>Интеграция с вашими сервисами</li>
+        </ul>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="service-card glass fade-up">
+        <div class="service-icon">⚡</div>
+        <h3>ИИ-агенты и автоматизация</h3>
+        <p>Рутинные задачи воруют ваши часы. Строю ИИ-агентов и автоматизации, которые ведут лидов, отвечают клиентам, обрабатывают данные — тихо работая в фоне, пока вы занимаетесь ростом.</p>
+        <ul class="service-bullets">
+          <li>Работает 24/7 без вашего участия</li>
+          <li>Интегрируется с CRM, мессенджерами, таблицами</li>
+          <li>Автоматизировано однажды — работает вечно</li>
+          <li>Экономит часы работы каждую неделю</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="services-cta fade-up">
+      <p>
+        <span>Один специалист — вся цифровая экосистема.</span>
+        Сайт, приложение и автоматизация работают как единый организм, а не три несвязанных части.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PORTFOLIO
+═══════════════════════════════════════════════════════ -->
+<section id="portfolio" class="portfolio">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="label">Портфолио</span>
+      <h2>Работы</h2>
+    </div>
+
+    <div class="portfolio-grid">
+      <!-- Card 1 (wide) -->
+      <div class="portfolio-card glass fade-up">
+        <div class="mockup">
+          <div class="mockup-bar">
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+            <div class="mockup-url"></div>
+          </div>
+          <div class="mockup-screen">
+            <div class="mockup-placeholder">
+              <div class="icon">🏡</div>
+              <span>Цифровые инструменты риелтора</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-header">
+          <span class="card-type">Сайт под ключ</span>
+          <span class="card-status">В разработке</span>
+        </div>
+        <h3>Цифровые инструменты риелтора</h3>
+        <p>Личный маркетинговый сайт агента по продаже загородной недвижимости в Подмосковье. Лендинг + цифровая визитка: галерея домов, калькулятор рассрочки, видео с экскурсии, блок доверия.</p>
+        <div class="stack-tags">
+          <span class="tag">HTML</span>
+          <span class="tag">CSS</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">Вайбкодинг</span>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="portfolio-card glass fade-up">
+        <div class="mockup">
+          <div class="mockup-bar">
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+            <div class="mockup-url"></div>
+          </div>
+          <div class="mockup-screen" style="background:linear-gradient(135deg,rgba(6,182,212,0.08),rgba(99,102,241,0.05))">
+            <div class="mockup-placeholder">
+              <div class="icon">🤖</div>
+              <span>AI Studio · Калькулятор</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-header">
+          <span class="card-type" style="background:rgba(6,182,212,0.12);color:var(--cyan)">AI-инструмент</span>
+          <span class="card-status">В разработке</span>
+        </div>
+        <h3>Калькулятор доходов и расходов</h3>
+        <p>Умный инструмент для финансового анализа, разработанный на платформе AI Studio. Автоматизирует расчёты и помогает принимать решения.</p>
+        <div class="stack-tags">
+          <span class="tag">AI Studio</span>
+          <span class="tag">Автоматизация</span>
+        </div>
+      </div>
+
+      <!-- Placeholder -->
+      <div class="portfolio-card fade-up" style="border:1px dashed rgba(99,102,241,0.2);background:rgba(30,41,59,0.2);display:flex;align-items:center;justify-content:center;min-height:200px;">
+        <div style="text-align:center;color:var(--muted)">
+          <div style="font-size:32px;margin-bottom:12px">✦</div>
+          <div style="font-family:var(--font-h);font-size:14px;font-weight:600">Следующий проект</div>
+          <div style="font-size:13px;margin-top:6px">Скоро здесь</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="portfolio-coming fade-up">
+      <span>✦ Больше кейсов и отзывы клиентов — скоро</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ABOUT
+═══════════════════════════════════════════════════════ -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <!-- Photo -->
+      <div class="about-photo-wrap fade-up">
+        <div class="about-photo">
+          <div class="photo-placeholder">
+            <div class="ph-icon">👤</div>
+            <span>Ваше фото</span>
+          </div>
+        </div>
+        <div class="photo-deco-1"></div>
+        <div class="photo-deco-2"></div>
+      </div>
+
+      <!-- Text -->
+      <div class="about-text fade-up">
+        <span class="label">О себе</span>
+        <h2>Привет,<br>я Виктория</h2>
+
+        <p>
+          Я эксперт в области AI и цифровых технологий. Помогаю бизнесу создавать сайты, которые продают, и внедрять AI-инструменты, которые освобождают команду от рутины.
+        </p>
+        <p>
+          Я выбрала это направление, потому что вижу, как технологии меняют способ работы — и хочу помочь бизнесу использовать их возможности по максимуму, без лишней сложности.
+        </p>
+        <p>
+          Работаю в тесном контакте с клиентами: задаю вопросы, погружаюсь в задачу и предлагаю решение, которое реально работает. Без воды и технического жаргона.
+        </p>
+
+        <div class="values-grid">
+          <div class="value-card">
+            <div class="value-label">Прозрачность</div>
+            <div class="value-desc">Понятные сроки и стоимость</div>
+          </div>
+          <div class="value-card">
+            <div class="value-label">Результат</div>
+            <div class="value-desc">Не процесс, а готовый продукт</div>
+          </div>
+          <div class="value-card">
+            <div class="value-label">Погружение</div>
+            <div class="value-desc">Изучаю вашу задачу изнутри</div>
+          </div>
+          <div class="value-card">
+            <div class="value-label">Поддержка</div>
+            <div class="value-desc">На связи после запуска</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PROCESS
+═══════════════════════════════════════════════════════ -->
+<section id="process" class="process">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="label">Процесс</span>
+      <h2>Как мы работаем</h2>
+      <p style="font-size:16px;color:var(--muted);margin-top:12px;max-width:440px;margin-left:auto;margin-right:auto">
+        Четыре шага — от первого звонка до готового продукта
+      </p>
+    </div>
+
+    <div class="process-grid">
+      <div class="step-card fade-up">
+        <div class="step-num">01</div>
+        <h3>Бриф / Звонок</h3>
+        <p>Обсуждаем задачу без обязательств — я задаю вопросы и разбираюсь в вашем бизнесе</p>
+      </div>
+      <div class="step-card fade-up">
+        <div class="step-num">02</div>
+        <h3>Предложение</h3>
+        <p>Получаете чёткий план, сроки и стоимость — без сюрпризов и скрытых условий</p>
+      </div>
+      <div class="step-card fade-up">
+        <div class="step-num">03</div>
+        <h3>Разработка</h3>
+        <p>Живые превью, чекины, ваша обратная связь на каждом шаге итерации</p>
+      </div>
+      <div class="step-card fade-up">
+        <div class="step-num">04</div>
+        <h3>Запуск</h3>
+        <p>Готовый продукт с документацией. Остаюсь на связи и после запуска</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TESTIMONIALS
+═══════════════════════════════════════════════════════ -->
+<section id="testimonials">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="label">Отзывы</span>
+      <h2>Что говорят клиенты</h2>
+    </div>
+    <div class="testimonials-placeholder fade-up">
+      <div class="icon">💬</div>
+      <h3>Первые проекты завершаются</h3>
+      <p>Работаю над проектами прямо сейчас. Отзывы клиентов появятся здесь после запуска. Если хотите стать одним из первых — напишите мне.</p>
+      <a href="#contacts" class="btn btn-ghost" style="margin-top:24px;display:inline-flex">Обсудить проект</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     FAQ
+═══════════════════════════════════════════════════════ -->
+<section id="faq" class="faq">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="label">FAQ</span>
+      <h2>Частые вопросы</h2>
+    </div>
+
+    <div class="faq-list fade-up">
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Сколько стоит сайт или ИИ-агент?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Стоимость зависит от объёма задачи. На первом звонке обсудим ваши цели и я дам конкретную цифру — без «зависит от многих факторов». Я за прозрачное ценообразование.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Сколько времени занимает?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Лендинг — 1–2 недели. Корпоративный сайт — 3–4 недели. ИИ-агент — от 1 недели. Всегда озвучиваю сроки заранее и придерживаюсь их.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Нужно ли мне разбираться в технологиях?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Нет. Моя работа — взять вашу задачу и вернуть готовый результат. Объясняю на человеческом языке, без жаргона. Вы занимаетесь бизнесом — я занимаюсь технологиями.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Что если результат мне не понравится?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Работаю итерационно — показываю промежуточные результаты и собираю обратную связь на каждом шаге. Правки входят в стоимость до финального утверждения. Сюрпризов не будет.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Чем ты отличаешься от агентства?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Вы работаете напрямую со мной — не с менеджером, который передаёт задачу дальше. Я вижу весь проект целиком: сайт, приложение и автоматизацию как единую систему. Никаких испорченных телефонов.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Работаешь ли с небольшими бюджетами?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Да, есть решения для разного масштаба. Расскажите задачу — найдём формат, который работает именно для вас. Важна задача, а не бюджет.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Поддерживаешь ли после запуска?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Да. Передаю всё с документацией и остаюсь доступной для вопросов. Техническая поддержка и развитие проекта обсуждаются отдельно.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     CONTACTS
+═══════════════════════════════════════════════════════ -->
+<section id="contacts">
+  <div class="container">
+    <div class="contacts-grid">
+      <!-- Info -->
+      <div class="fade-up">
+        <span class="label">Контакты</span>
+        <h2>Давай обсудим<br><span class="text-gradient">твою задачу</span></h2>
+        <p>Расскажи о своём проекте — я разберусь в задаче и предложу, как могу помочь. Без лишних слов.</p>
+
+        <a href="https://t.me/username" class="contact-link">
+          <div class="contact-icon tg">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--accent)">
+              <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="contact-title">Telegram</div>
+            <div class="contact-val">@username</div>
+          </div>
+        </a>
+
+        <a href="mailto:email@domain.ru" class="contact-link">
+          <div class="contact-icon em">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+          </div>
+          <div>
+            <div class="contact-title">Email</div>
+            <div class="contact-val">email@domain.ru</div>
+          </div>
+        </a>
+
+        <div class="availability">
+          <span class="availability-dot"></span>
+          Сейчас открыта для проектов — старт в мае 2026
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="fade-up">
+        <div class="contact-form glass">
+          <form id="contactForm" onsubmit="handleSubmit(event)">
+            <div class="form-group">
+              <label for="name">Имя *</label>
+              <input type="text" id="name" name="name" placeholder="Как вас зовут?" required>
+            </div>
+            <div class="form-group">
+              <label for="contact">Email или Telegram *</label>
+              <input type="text" id="contact" name="contact" placeholder="email@domain.ru или @username" required>
+            </div>
+            <div class="form-group">
+              <label for="type">Тип проекта</label>
+              <select id="type" name="type">
+                <option value="">Выберите направление</option>
+                <option value="site">Сайт под ключ</option>
+                <option value="app">Приложение</option>
+                <option value="ai">ИИ-агент / автоматизация</option>
+                <option value="other">Другое</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="message">Коротко о задаче *</label>
+              <textarea id="message" name="message" placeholder="Расскажите, что нужно сделать..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary form-submit" id="submitBtn">
+              Отправить заявку
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </form>
+
+          <div class="form-success" id="formSuccess">
+            <div class="success-icon">✅</div>
+            <h3>Заявка отправлена!</h3>
+            <p>Отвечу в течение 24 часов. Спасибо, что написали — скоро свяжусь.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="text-gradient">Виктория Полтавченко</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="#services">Услуги</a></li>
+        <li><a href="#portfolio">Портфолио</a></li>
+        <li><a href="#about">О себе</a></li>
+        <li><a href="#contacts">Контакты</a></li>
+      </ul>
+      <div class="footer-copy">© 2026 · Сайты и AI-автоматизация для бизнеса</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════ -->
+<script>
+
+// ─── NAV scroll ───────────────────────────────────────────
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+}, { passive: true });
+
+// ─── Burger menu ─────────────────────────────────────────
+const burger = document.getElementById('burger');
+const mobileMenu = document.getElementById('mobileMenu');
+
+burger.addEventListener('click', () => {
+  burger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+});
+
+function closeMenu() {
+  burger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+}
+
+// ─── Scroll animations ────────────────────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const siblings = el.parentElement.querySelectorAll('.fade-up');
+      let delay = 0;
+      siblings.forEach((sib, i) => {
+        if (sib === el) delay = i * 100;
+      });
+      setTimeout(() => el.classList.add('visible'), delay);
+      observer.unobserve(el);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// ─── FAQ accordion ───────────────────────────────────────
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// ─── Form ────────────────────────────────────────────────
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = 'Отправляю...';
+  btn.disabled = true;
+
+  // Simulate send (replace with Formspree/Resend)
+  setTimeout(() => {
+    document.getElementById('contactForm').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+  }, 1200);
+}
+
+// ─── Custom cursor ───────────────────────────────────────
+const dot  = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+let mouseX = 0, mouseY = 0;
+let ringX  = 0, ringY  = 0;
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  dot.style.left  = mouseX + 'px';
+  dot.style.top   = mouseY + 'px';
+}, { passive: true });
+
+function animateRing() {
+  ringX += (mouseX - ringX) * 0.12;
+  ringY += (mouseY - ringY) * 0.12;
+  ring.style.left = ringX + 'px';
+  ring.style.top  = ringY + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+// Hover effects on interactive elements
+document.querySelectorAll('a, button, .faq-q, .service-card, .portfolio-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    ring.style.width  = '48px';
+    ring.style.height = '48px';
+    ring.style.borderColor = 'rgba(99,102,241,0.8)';
+  });
+  el.addEventListener('mouseleave', () => {
+    ring.style.width  = '32px';
+    ring.style.height = '32px';
+    ring.style.borderColor = 'rgba(99,102,241,0.5)';
+  });
+});
+
+// ─── Active nav links ─────────────────────────────────────
+const sections = document.querySelectorAll('section[id]');
+const navLinks  = document.querySelectorAll('.nav-links a');
+
+const navObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(link => {
+        link.style.color = link.getAttribute('href') === '#' + entry.target.id
+          ? 'var(--text)' : '';
+      });
+    }
+  });
+}, { threshold: 0.4 });
+
+sections.forEach(s => navObserver.observe(s));
+
+</script>
+</body>
+</html>
