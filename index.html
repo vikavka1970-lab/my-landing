@@ -663,7 +663,8 @@ section { padding: 100px 0; }
   border: 1px solid rgba(99,102,241,0.3);
   display: flex; align-items: center; justify-content: center;
   margin: 0 auto 20px;
-  font-family: var(--font-h); font-size: 15px; font-weight: 800;
+  font-family: var(--font-m); font-size: 14px; font-weight: 700;
+  font-variant-numeric: tabular-nums; letter-spacing: 0.05em;
   color: var(--accent); position: relative; z-index: 1;
 }
 .step-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
@@ -1820,37 +1821,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-// ─── Number counter animation ─────────────────────────────
-function animateCount(el, target, suffix = '') {
-  let start = 0;
-  const duration = 1800;
-  const step = timestamp => {
-    if (!start) start = timestamp;
-    const progress = Math.min((timestamp - start) / duration, 1);
-    const ease = 1 - Math.pow(1 - progress, 3);
-    el.textContent = Math.floor(ease * target) + suffix;
-    if (progress < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
-}
-
-const counterObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const nums = entry.target.querySelectorAll('.stat-num');
-      nums.forEach(n => {
-        const text = n.textContent.trim();
-        if (text === '24ч') { animateCount(n, 24, 'ч'); return; }
-        const val = parseInt(text);
-        if (!isNaN(val)) animateCount(n, val);
-      });
-      counterObserver.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.5 });
-
-const statsBar = document.querySelector('.stats-bar');
-if (statsBar) counterObserver.observe(statsBar);
 
 // ─── Section reveal with stagger children ────────────────
 const sectionObserver = new IntersectionObserver((entries) => {
