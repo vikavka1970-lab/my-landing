@@ -574,11 +574,87 @@ section { padding: 100px 0; }
 .mockup-url {
   flex: 1; height: 20px; border-radius: 4px;
   background: rgba(255,255,255,0.04); margin-left: 8px;
+  display: flex; align-items: center; padding: 0 10px;
+  font-size: 11px; color: rgba(255,255,255,0.25); font-family: var(--font-m);
+  letter-spacing: 0.02em; overflow: hidden; white-space: nowrap;
 }
 .mockup-screen {
-  height: 160px; position: relative; overflow: hidden;
+  height: 220px; position: relative; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
   background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(6,182,212,0.05));
+}
+.mockup-screen.tall { height: 320px; }
+
+/* Wide portfolio card — 2-column layout */
+.portfolio-card--wide {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 40px;
+  align-items: start;
+  padding: 0 !important;
+  overflow: hidden;
+}
+.portfolio-card--wide .mockup-col {
+  position: relative;
+}
+.portfolio-card--wide .mockup-col .mockup {
+  margin-bottom: 0;
+  border-radius: 0;
+  border: none;
+  border-right: 1px solid var(--border);
+  height: 100%;
+}
+.portfolio-card--wide .mockup-col .mockup-bar {
+  border-radius: 0;
+}
+.portfolio-card--wide .mockup-col .mockup-screen {
+  height: 440px;
+}
+.portfolio-card--wide .mockup-col .mockup-screen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: object-position 6s ease;
+}
+.portfolio-card--wide .mockup-col:hover .mockup-screen img {
+  object-position: bottom;
+}
+.portfolio-card--wide .info-col {
+  padding: 32px 32px 32px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+}
+/* Feature list inside wide card */
+.card-features {
+  list-style: none; padding: 0; margin: 0 0 20px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.card-features li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14px; color: var(--muted); line-height: 1.5;
+}
+.card-features li::before {
+  content: '✓';
+  color: var(--accent); font-weight: 700; font-size: 13px;
+  margin-top: 1px; flex-shrink: 0;
+}
+@media (max-width: 860px) {
+  .portfolio-card--wide {
+    grid-template-columns: 1fr;
+  }
+  .portfolio-card--wide .mockup-col .mockup {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .portfolio-card--wide .mockup-col .mockup-screen {
+    height: 240px;
+  }
+  .portfolio-card--wide .info-col {
+    padding: 0 24px 24px;
+  }
 }
 .mockup-placeholder {
   text-align: center; color: var(--muted);
@@ -1311,28 +1387,41 @@ footer {
 
     <div class="portfolio-grid">
       <!-- Card 1 (wide) -->
-      <div class="portfolio-card glass fade-up">
-        <div class="mockup">
-          <div class="mockup-bar">
-            <div class="mockup-dot"></div>
-            <div class="mockup-dot"></div>
-            <div class="mockup-dot"></div>
-            <div class="mockup-url"></div>
-          </div>
-          <div class="mockup-screen" style="padding:0;overflow:hidden;">
-            <img src="images/portfolio-realty.png" alt="Тихие Луга — сайт загородной недвижимости" style="width:100%;height:100%;object-fit:cover;object-position:top;">
+      <div class="portfolio-card portfolio-card--wide glass fade-up">
+        <!-- Left: screenshot mockup -->
+        <div class="mockup-col">
+          <div class="mockup">
+            <div class="mockup-bar">
+              <div class="mockup-dot"></div>
+              <div class="mockup-dot"></div>
+              <div class="mockup-dot"></div>
+              <div class="mockup-url">тихие-луга.рф</div>
+            </div>
+            <div class="mockup-screen">
+              <img src="images/portfolio-realty.png" alt="Тихие Луга — сайт загородной недвижимости">
+            </div>
           </div>
         </div>
-        <div class="card-header">
-          <span class="card-type">Сайт под ключ</span>
-          <span class="card-status">В разработке</span>
-        </div>
-        <h3>Цифровые инструменты риелтора</h3>
-        <p>Личный маркетинговый сайт агента по продаже загородной недвижимости в Подмосковье. Лендинг + цифровая визитка: галерея домов, калькулятор рассрочки, видео с экскурсии, блок доверия.</p>
-        <div class="stack-tags">
-          <span class="tag">HTML</span>
-          <span class="tag">CSS</span>
-          <span class="tag">JavaScript</span>
+        <!-- Right: project info -->
+        <div class="info-col">
+          <div class="card-header">
+            <span class="card-type">Сайт под ключ</span>
+            <span class="card-status">В разработке</span>
+          </div>
+          <h3>Сайт агента по загородной недвижимости</h3>
+          <p>Личный маркетинговый лендинг для риелтора: продаёт объекты и формирует доверие ещё до звонка. Наведите на скриншот — увидите всю страницу.</p>
+          <ul class="card-features">
+            <li>Герой-секция с фото объектов и ценой</li>
+            <li>Галерея домов с фильтром по цене</li>
+            <li>Калькулятор рассрочки/ипотеки</li>
+            <li>Блок доверия: сделки, стаж, отзывы</li>
+            <li>Видео-тур по посёлку</li>
+          </ul>
+          <div class="stack-tags">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">JavaScript</span>
+          </div>
         </div>
       </div>
 
