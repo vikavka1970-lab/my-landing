@@ -327,7 +327,7 @@ section { padding: 100px 0; }
 .hero-tagline {
   font-family: var(--font-h); font-size: clamp(18px, 2.5vw, 26px);
   font-weight: 600; color: var(--muted);
-  margin-bottom: 20px;
+  margin-bottom: 20px; min-height: 2em;
   animation: fadeUp 0.8s 0.2s ease both;
 }
 .hero-sub {
@@ -1167,7 +1167,7 @@ footer {
       </h1>
 
       <p class="hero-tagline">
-        Создаю сайты и внедряю AI-автоматизацию для бизнеса
+        <span id="typewriter"></span><span class="type-cursor">|</span>
       </p>
 
       <p class="hero-sub">
@@ -1867,6 +1867,47 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     window.scrollTo({ top, behavior: 'smooth' });
   });
 });
+
+// ─── Typewriter effect ───────────────────────────────────
+(function() {
+  const phrases = [
+    'Создаю сайты под ключ',
+    'Внедряю AI-автоматизацию',
+    'Освобождаю бизнес от рутины',
+    'Запускаю за 2 недели'
+  ];
+  const el = document.getElementById('typewriter');
+  const cursor = document.querySelector('.type-cursor');
+  if (!el) return;
+
+  let phraseIdx = 0, charIdx = 0, deleting = false;
+
+  // cursor blink
+  setInterval(() => cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0', 530);
+
+  function type() {
+    const phrase = phrases[phraseIdx];
+    if (!deleting) {
+      el.textContent = phrase.slice(0, ++charIdx);
+      if (charIdx === phrase.length) {
+        deleting = true;
+        setTimeout(type, 2000);
+        return;
+      }
+      setTimeout(type, 65);
+    } else {
+      el.textContent = phrase.slice(0, --charIdx);
+      if (charIdx === 0) {
+        deleting = false;
+        phraseIdx = (phraseIdx + 1) % phrases.length;
+        setTimeout(type, 400);
+        return;
+      }
+      setTimeout(type, 35);
+    }
+  }
+  setTimeout(type, 1000);
+})();
 
 // ─── 3D Card Tilt ────────────────────────────────────────
 const tiltCards = document.querySelectorAll('.service-card, .portfolio-card, .step-card');
