@@ -115,6 +115,8 @@ my-landing/
 ├── brief.md                ← требования и контент-план
 ├── research.md             ← анализ конкурентов (апрель 2026)
 ├── package.json            ← dev-зависимости (Puppeteer для скриншотов)
+├── scripts/
+│   └── screenshot.js       ← скрипт для скриншотов портфолио (npm run screenshot)
 ├── images/
 │   ├── victoria.png        ← фото (Hero + О себе)
 │   ├── portfolio-realty.png ← скриншот кейса #1

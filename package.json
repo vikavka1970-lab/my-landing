@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "scripts": {
+    "screenshot": "node scripts/screenshot.js"
+  },
+  "devDependencies": {
+    "puppeteer": "^24.40.0"
+  }
+}

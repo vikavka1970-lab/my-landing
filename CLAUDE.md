@@ -25,6 +25,14 @@
 - Исключение: Web3Forms для формы обратной связи (один `fetch`)
 - Dev-зависимость: `puppeteer` (`package.json`) — для автоматических скриншотов портфолио. В продакшн-сборку не попадает.
 
+**Скриншоты для портфолио** — делаются командой:
+```
+npm run screenshot -- <url> <имя-файла>
+npm run screenshot -- https://example.com realty-site
+npm run screenshot -- https://example.com realty-site --all   # десктоп + мобайл
+```
+Файл сохраняется в `images/`. Скрипт: `scripts/screenshot.js`
+
 **При создании новой страницы** — обязательно копировать блок с CSS-переменными, шрифтами, grain texture, cursor, кнопками и fade-анимациями из существующей страницы. Все страницы должны выглядеть единым целым.
 
 ---
