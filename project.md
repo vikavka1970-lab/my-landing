@@ -120,7 +120,10 @@ my-landing/
 ├── images/
 │   ├── victoria.png        ← фото (Hero + О себе)
 │   ├── portfolio-realty.png ← скриншот кейса #1
-│   ├── tikhie-lugi.png     ← доп. изображение
+│   ├── zelyony-uchet.png   ← скриншот кейса #2 (десктоп)
+│   ├── zelyony-uchet-mobile.png ← скриншот кейса #2 (мобайл)
+│   ├── tikhie-lugi.png     ← изображение (в HTML не используется, зарезервировано)
+│   ├── my-landing-preview.png ← скриншот лендинга (в HTML не используется, архив)
 │   └── favicon.svg         ← иконка вкладки
 ├── docs/
 │   └── CONTENT-GUIDE.md   ← как обновлять контент
