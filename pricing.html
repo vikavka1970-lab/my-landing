@@ -565,6 +565,15 @@ h1,h2,h3,h4 { font-family: var(--font-h); line-height: 1.1; }
   display: flex; align-items: center; justify-content: center;
   gap: 16px; flex-wrap: wrap;
 }
+.cta-secondary-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 28px;
+  color: var(--muted); font-family: var(--font-m); font-size: 13px;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.25s, gap 0.25s;
+}
+.cta-secondary-link:hover { color: var(--accent); gap: 12px; }
 
 /* ─── FOOTER ────────────────────────────────────────────── */
 footer {
@@ -958,6 +967,10 @@ footer {
           Заполнить форму
         </a>
       </div>
+      <a href="index.html#portfolio" class="cta-secondary-link">
+        Или посмотреть примеры работ
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
     </div>
   </div>
 </section>
