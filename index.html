@@ -628,10 +628,21 @@ section { padding: 100px 0; }
   height: 100%;
   object-fit: cover;
   object-position: top;
-  transition: object-position 6s ease;
+  animation: scroll-preview 14s ease-in-out infinite;
 }
 .portfolio-card--wide .mockup-col:hover .mockup-screen img {
-  object-position: bottom;
+  animation-play-state: paused;
+}
+@keyframes scroll-preview {
+  0%   { object-position: top; }
+  45%  { object-position: bottom; }
+  55%  { object-position: bottom; }
+  100% { object-position: top; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-card--wide .mockup-col .mockup-screen img {
+    animation: none;
+  }
 }
 .portfolio-card--wide .info-col {
   padding: 32px 32px 32px 0;
