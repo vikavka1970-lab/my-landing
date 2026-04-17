@@ -75,7 +75,7 @@ async function takeScreenshot(viewport, name) {
 
   await page.screenshot({
     path:     outputFile,
-    fullPage: false,   // только видимая область (top of page)
+    fullPage: flags.includes('--full'),  // --full для полной страницы, иначе только топ
   });
 
   await browser.close();
