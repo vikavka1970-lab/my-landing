@@ -622,22 +622,25 @@ section { padding: 100px 0; }
 }
 .portfolio-card--wide .mockup-col .mockup-screen {
   height: 440px;
+  overflow: hidden;
+  position: relative;
 }
 .portfolio-card--wide .mockup-col .mockup-screen img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 0%;
+  height: auto;
+  display: block;
+  position: absolute;
+  top: 0; left: 0;
   animation: scroll-preview 14s ease-in-out infinite;
 }
 .portfolio-card--wide .mockup-col:hover .mockup-screen img {
   animation-play-state: paused;
 }
 @keyframes scroll-preview {
-  0%   { object-position: 50% 0%; }
-  45%  { object-position: 50% 100%; }
-  55%  { object-position: 50% 100%; }
-  100% { object-position: 50% 0%; }
+  0%   { transform: translateY(0); }
+  45%  { transform: translateY(calc(-100% + 440px)); }
+  55%  { transform: translateY(calc(-100% + 440px)); }
+  100% { transform: translateY(0); }
 }
 @media (prefers-reduced-motion: reduce) {
   .portfolio-card--wide .mockup-col .mockup-screen img {
