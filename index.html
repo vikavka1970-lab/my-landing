@@ -515,12 +515,14 @@ section { padding: 100px 0; }
 .portfolio-grid {
   display: grid; gap: 20px;
   grid-template-columns: repeat(2, 1fr);
+  overflow: hidden;
 }
 .portfolio-card {
   padding: 32px; cursor: default;
   transition: border-color 0.3s, box-shadow 0.4s;
   transform-style: preserve-3d;
   will-change: transform;
+  min-width: 0;
 }
 .portfolio-card:hover {
   transform: translateY(-8px) scale(1.01);
