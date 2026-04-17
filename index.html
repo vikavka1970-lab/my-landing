@@ -510,7 +510,7 @@ section { padding: 100px 0; }
 .services-cta span { color: var(--text); }
 
 /* ─── PORTFOLIO ─────────────────────────────────────────── */
-.portfolio { background: rgba(30,41,59,0.2); }
+.portfolio { background: rgba(30,41,59,0.2); overflow: hidden; }
 
 .portfolio-grid {
   display: grid; gap: 20px;
@@ -596,6 +596,7 @@ section { padding: 100px 0; }
 .portfolio-card--wide {
   display: grid;
   grid-template-columns: 1fr 380px;
+  min-width: 0;
   gap: 40px;
   align-items: start;
   padding: 0 !important;
