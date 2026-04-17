@@ -633,14 +633,15 @@ section { padding: 100px 0; }
   position: absolute;
   top: 0; left: 0;
   will-change: transform;
-  animation: scroll-preview 12s linear infinite !important;
+  animation: scroll-preview 20s ease-in-out infinite !important;
 }
 .portfolio-card--wide .mockup-col:hover .mockup-screen img {
   animation-play-state: paused !important;
 }
 @keyframes scroll-preview {
   0%   { transform: translateY(0); }
-  50%  { transform: translateY(-86%); }
+  45%  { transform: translateY(-86%); }
+  55%  { transform: translateY(-86%); }
   100% { transform: translateY(0); }
 }
 .portfolio-card--wide .info-col {
