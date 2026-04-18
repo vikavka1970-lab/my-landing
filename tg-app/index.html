@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Расскажи о проекте — Виктория Полтавченко</title>
+
+  <!-- Telegram Mini App SDK — подключает tg.MainButton, tg.BackButton, тему и т.д. -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    /* ============================================================
+       ПЕРЕМЕННЫЕ ЦВЕТОВ
+       Используем CSS-переменные Telegram — тёмная/светлая тема
+       подхватывается автоматически без дополнительного кода.
+       Запасные значения — для тестирования в браузере.
+    ============================================================ */
+    :root {
+      --bg:          var(--tg-theme-bg-color,            #ffffff);
+      --surface:     var(--tg-theme-secondary-bg-color,  #f4f4f5);
+      --text:        var(--tg-theme-text-color,          #000000);
+      --hint:        var(--tg-theme-hint-color,          #8e8e93);
+      --accent:      var(--tg-theme-button-color,        #2aabee);
+      --accent-text: var(--tg-theme-button-text-color,   #ffffff);
+      --link:        var(--tg-theme-link-color,          #2aabee);
+
+      --radius:     12px;
+      --pad:        16px;
+      --touch:      52px;   /* минимальная высота кнопки/карточки */
+      --dur:        0.25s;
+      --ease:       ease;
+    }
+
+    /* ============================================================
+       СБРОС И БАЗОВЫЕ СТИЛИ
+    ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      /* Системный шрифт — выглядит нативно в iOS/Android */
+      font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================================
+       КОНТЕЙНЕР ПРИЛОЖЕНИЯ
+    ============================================================ */
+    #app {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* ============================================================
+       КНОПКА «НАЗАД» (резерв для браузера без Telegram)
+       В Telegram используется нативный BackButton в хедере.
+    ============================================================ */
+    #fb-back {
+      position: fixed;
+      top: 8px;
+      left: 8px;
+      z-index: 200;
+      display: none;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 16px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: opacity 0.15s;
+    }
+
+    #fb-back:active { opacity: 0.6; }
+
+    #fb-back.show { display: flex; }
+
+    /* Когда кнопка «Назад» видна — сдвигаем заголовок шага вниз */
+    .has-back .step-header {
+      padding-top: 44px;
+    }
+
+    /* ============================================================
+       ПРОГРЕСС-БАР
+       Тонкая линия вверху экрана, видна на шагах 1–5.
+    ============================================================ */
+    #progress {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--surface);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    #progress.visible { opacity: 1; }
+
+    #progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 0 2px 2px 0;
+      transition: width 0.3s ease;
+    }
+
+    /* ============================================================
+       ЭКРАНЫ
+       Все экраны стоят поверх друг друга абсолютно.
+       Активный экран — translateX(0).
+       Остальные — translateX(100%) (за правым краем).
+       Переходы управляются через JS + CSS transition.
+    ============================================================ */
+    .screen {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: var(--pad);
+      padding-bottom: 96px; /* место под MainButton Telegram */
+      background: var(--bg);
+      transform: translateX(100%);
+      transition: transform var(--dur) var(--ease);
+      will-change: transform;
+    }
+
+    .screen.active { transform: translateX(0); }
+
+    /* ============================================================
+       ЭКРАН 0 — ПРИВЕТСТВИЕ
+    ============================================================ */
+    #screen-0 {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 18px;
+      padding-top: 40px;
+      padding-bottom: 120px;
+    }
+
+    /* Аватар с инициалами «ВП».
+       Заменить на <img> когда будет фото victoria.png */
+    .welcome-avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #2aabee);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -1px;
+      flex-shrink: 0;
+      box-shadow: 0 8px 28px rgba(42, 171, 238, 0.32);
+    }
+
+    .welcome-title {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .welcome-sub {
+      font-size: 15px;
+      color: var(--hint);
+    }
+
+    /* Бейдж «Открыта для проектов» */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      color: var(--hint);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #34c759;
+      flex-shrink: 0;
+      animation: blink 2s ease infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.35; }
+    }
+
+    /* ============================================================
+       ЗАГОЛОВОК ШАГА
+    ============================================================ */
+    .step-header {
+      padding-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .step-num {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--hint);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+
+    .step-q {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .step-hint {
+      font-size: 14px;
+      color: var(--hint);
+    }
+
+    /* ============================================================
+       КАРТОЧКИ ВЫБОРА
+    ============================================================ */
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      min-height: var(--touch);
+      background: var(--surface);
+      border: 2px solid transparent;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.1s;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .card:active { transform: scale(0.98); }
+
+    .card.selected {
+      border-color: var(--accent);
+      /* Лёгкий тинт цвета акцента */
+      background: rgba(42, 171, 238, 0.08);
+    }
+
+    .card-icon {
+      font-size: 26px;
+      width: 34px;
+      text-align: center;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .card-body { flex: 1; min-width: 0; }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .card-sub {
+      font-size: 13px;
+      color: var(--hint);
+      margin-top: 2px;
+    }
+
+    /* Кружок-индикатор выбора справа */
+    .check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--hint);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .card.selected .check {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* Галочка внутри кружка */
+    .check::after {
+      content: '';
+      display: none;
+      width: 6px;
+      height: 10px;
+      border: 2px solid #fff;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg) translate(-1px, -1px);
+    }
+
+    .card.selected .check::after { display: block; }
+
+    /* ============================================================
+       ЭКРАН 5 — КОНТАКТ
+    ============================================================ */
+
+    /* Строка с именем пользователя из Telegram */
+    .user-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      margin-bottom: 14px;
+    }
+
+    .user-ava {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #2aabee);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .user-info { flex: 1; }
+
+    .user-label {
+      font-size: 12px;
+      color: var(--hint);
+    }
+
+    .user-name {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    /* Поля формы */
+    .field-group { margin-bottom: 12px; }
+
+    .field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--hint);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .field {
+      width: 100%;
+      padding: 13px 14px;
+      background: var(--surface);
+      border: 2px solid transparent;
+      border-radius: var(--radius);
+      font-size: 16px;
+      color: var(--text);
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .field:focus { border-color: var(--accent); }
+
+    .field::placeholder { color: var(--hint); }
+
+    /* Нередактируемый Telegram-ник */
+    .field[readonly] {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    textarea.field {
+      resize: none;
+      min-height: 96px;
+    }
+
+    /* ============================================================
+       РЕЗЕРВНЫЕ КНОПКИ (для тестирования в браузере без Telegram)
+       Скрыты по умолчанию. Показываются через .show если !hasTg.
+    ============================================================ */
+    .fb-btn {
+      display: none;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      height: var(--touch);
+      background: var(--accent);
+      color: var(--accent-text);
+      border: none;
+      border-radius: var(--radius);
+      font-size: 16px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .fb-btn:active {
+      opacity: 0.85;
+      transform: scale(0.98);
+    }
+
+    .fb-btn.show { display: flex; }
+
+    /* ============================================================
+       ЭКРАН 6 — УСПЕХ
+    ============================================================ */
+    #screen-6 {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 16px;
+      padding-top: 32px;
+      padding-bottom: 120px;
+    }
+
+    .success-circle {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: rgba(52, 199, 89, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* Анимация запускается через JS после перехода на экран */
+    }
+
+    .success-circle.pop {
+      animation: popIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .success-title {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .success-sub {
+      font-size: 15px;
+      color: var(--hint);
+      max-width: 260px;
+      line-height: 1.55;
+    }
+
+    /* Кнопка «Написать напрямую» */
+    .direct-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 200px;
+      height: var(--touch);
+      padding: 0 24px;
+      background: var(--surface);
+      color: var(--link);
+      border: none;
+      border-radius: var(--radius);
+      font-size: 16px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+
+    .direct-btn:active { opacity: 0.7; }
+  </style>
+</head>
+<body>
+
+  <!-- Прогресс-бар (шаги 1–5) -->
+  <div id="progress">
+    <div id="progress-fill"></div>
+  </div>
+
+  <!-- Кнопка «Назад» для браузера (в Telegram — нативный BackButton) -->
+  <button id="fb-back" onclick="go(curr - 1, 'back')">‹ Назад</button>
+
+  <div id="app">
+
+    <!-- ==================================================
+         ЭКРАН 0: ПРИВЕТСТВИЕ
+         Первое, что видит пользователь.
+         Цель: снять тревогу и побудить начать.
+    ================================================== -->
+    <div class="screen active" id="screen-0">
+      <!-- Аватар. Заменить на <img src="victoria.png"> когда будет фото -->
+      <div class="welcome-avatar">ВП</div>
+
+      <div class="welcome-title">Привет! Расскажи о своём проекте</div>
+
+      <div class="welcome-sub">5 вопросов — займёт 2 минуты</div>
+
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        Открыта для новых проектов
+      </div>
+
+      <!-- Резервная кнопка — видна только вне Telegram (браузер) -->
+      <button class="fb-btn" id="fb-start" onclick="go(1,'forward')">
+        Начать →
+      </button>
+    </div>
+
+    <!-- ==================================================
+         ЭКРАН 1: ТИП ПРОЕКТА
+         Одиночный выбор → автопереход на экран 2
+    ================================================== -->
+    <div class="screen" id="screen-1">
+      <div class="step-header">
+        <div class="step-num">Шаг 1 из 5</div>
+        <div class="step-q">Что нужно сделать?</div>
+      </div>
+
+      <div class="cards">
+        <div class="card" data-value="Сайт / лендинг" onclick="pickOne(this,1)">
+          <div class="card-icon">🌐</div>
+          <div class="card-body">
+            <div class="card-title">Сайт / лендинг</div>
+            <div class="card-sub">Визитка, портфолио, корпоративный сайт</div>
+          </div>
+          <div class="check"></div>
+        </div>
+        <div class="card" data-value="Приложение" onclick="pickOne(this,1)">
+          <div class="card-icon">📱</div>
+          <div class="card-body">
+            <div class="card-title">Приложение</div>
+            <div class="card-sub">Веб-приложение, PWA, MVP для стартапа</div>
+          </div>
+          <div class="check"></div>
+        </div>
+        <div class="card" data-value="AI-автоматизация" onclick="pickOne(this,1)">
+          <div class="card-icon">🤖</div>
+          <div class="card-body">
+            <div class="card-title">AI-автоматизация</div>
+            <div class="card-sub">Агент, бот, автоматизация процессов</div>
+          </div>
+          <div class="check"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================================================
+         ЭКРАН 2: СРОК
+         Одиночный выбор → автопереход на экран 3
+    ================================================== -->
+    <div class="screen" id="screen-2">
+      <div class="step-header">
+        <div class="step-num">Шаг 2 из 5</div>
+        <div class="step-q">Когда нужен результат?</div>
+      </div>
+
+      <div class="cards">
+        <div class="card" data-value="Срочно (до 2 недель)" onclick="pickOne(this,2)">
+          <div class="card-icon">🔥</div>
+          <div class="card-body">
+            <div class="card-title">Срочно</div>
+            <div class="card-sub">До 2 недель</div>
+          </div>
+          <div class="check"></div>
+        </div>
+        <div class="card" data-value="Стандартно (1–2 месяца)" onclick="pickOne(this,2)">
+          <div class="card-icon">📅</div>
+          <div class="card-body">
+            <div class="card-title">Стандартно</div>
+            <div class="card-sub">1–2 месяца</div>
+          </div>
+          <div class="check"></div>
+        </div>
+        <div class="card" data-value="Не горит (обсудим)" onclick="pickOne(this,2)">
+          <div class="card-icon">🗓</div>
+          <div class="card-body">
+            <div class="card-title">Не горит</div>
+            <div class="card-sub">Обсудим сроки</div>
+          </div>
+          <div class="check"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================================================
+         ЭКРАН 3: БЮДЖЕТ
+         Одиночный выбор → автопереход на экран 4
+    ================================================== -->
+    <div class="screen" id="screen-3">
+      <div class="step-header">
+        <div class="step-num">Шаг 3 из 5</div>
+        <div class="step-q">Примерный бюджет?</div>
+      </div>
+
+      <div class="cards">
+        <div class="card" data-value="До 30 000 ₽" onclick="pickOne(this,3)">
+          <div class="card-icon">💸</div>
+          <div class="card-body">
+            <div class="card-title">До 30 000 ₽</div>
+          </div>
+          <div class="check"></div>
+        </div>
+        <div class="card" data-value="30 000 – 80 000 ₽" onclick="pickOne(this,3)">
+          <div class="card-icon">💰</div>
+          <div class="card-body">
+            <div class="card-title">30 000 – 80 000 ₽</div>
+          </div>
+          <div class="check"></div>
+        </div>
+        <div class="card" data-value="80 000 – 150 000 ₽" onclick="pickOne(this,3)">
+          <div class="card-icon">💎</div>
+          <div class="card-body">
+            <div class="card-title">80 000 – 150 000 ₽</div>
+          </div>
+          <div class="check"></div>
+        </div>
+        <div class="card" data-value="Обсудим на звонке" onclick="pickOne(this,3)">
+          <div class="card-icon">🤝</div>
+          <div class="card-body">
+            <div class="card-title">Обсудим на звонке</div>
+          </div>
+          <div class="check"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================================================
+         ЭКРАН 4: ПРИОРИТЕТЫ
+         Множественный выбор.
+         MainButton «Далее →» появляется после ≥1 выбора.
+    ================================================== -->
+    <div class="screen" id="screen-4">
+      <div class="step-header">
+        <div class="step-num">Шаг 4 из 5</div>
+        <div class="step-q">Что важнее всего?</div>
+        <div class="step-hint">Можно выбрать несколько</div>
+      </div>
+
+      <div class="cards" id="cards-4">
+        <div class="card" data-value="Скорость запуска" onclick="pickMany(this)">
+          <div class="card-icon">⚡</div>
+          <div class="card-body">
+            <div class="card-title">Скорость запуска</div>
+          </div>
+          <div class="check"></div>
+        </div>
+        <div class="card" data-value="Дизайн и качество" onclick="pickMany(this)">
+          <div class="card-icon">💎</div>
+          <div class="card-body">
+            <div class="card-title">Дизайн и качество</div>
+          </div>
+          <div class="check"></div>
+        </div>
+        <div class="card" data-value="Прозрачность и общение" onclick="pickMany(this)">
+          <div class="card-icon">🤝</div>
+          <div class="card-body">
+            <div class="card-title">Прозрачность и общение</div>
+          </div>
+          <div class="check"></div>
+        </div>
+        <div class="card" data-value="Рост продаж" onclick="pickMany(this)">
+          <div class="card-icon">📈</div>
+          <div class="card-body">
+            <div class="card-title">Рост продаж</div>
+          </div>
+          <div class="check"></div>
+        </div>
+      </div>
+
+      <!-- Резервная кнопка — видна в браузере после ≥1 выбора -->
+      <button class="fb-btn" id="fb-next4" onclick="go(5,'forward')">
+        Далее →
+      </button>
+    </div>
+
+    <!-- ==================================================
+         ЭКРАН 5: КОНТАКТ
+         Имя и ник берутся из Telegram API.
+         Поля телефон/email и детали — необязательные.
+    ================================================== -->
+    <div class="screen" id="screen-5">
+      <div class="step-header">
+        <div class="step-num">Шаг 5 из 5</div>
+        <div class="step-q" id="contact-q">Как с тобой связаться?</div>
+      </div>
+
+      <!-- Профиль из Telegram — показывает что всё уже известно -->
+      <div class="user-row">
+        <div class="user-ava" id="user-ava">?</div>
+        <div class="user-info">
+          <div class="user-label">Ты входишь как</div>
+          <div class="user-name" id="user-name">Загрузка...</div>
+        </div>
+      </div>
+
+      <!-- Telegram-ник: заполняется автоматически, нередактируемый -->
+      <div class="field-group">
+        <label class="field-label">Telegram</label>
+        <input class="field" type="text" id="f-nick" readonly placeholder="@username">
+      </div>
+
+      <!-- Телефон или email (необязательно) -->
+      <div class="field-group">
+        <label class="field-label">Телефон или email (необязательно)</label>
+        <input class="field" type="text" id="f-contact"
+               placeholder="+7 999 000 00 00 или email@example.com"
+               autocomplete="email">
+      </div>
+
+      <!-- Дополнительные детали (необязательно) -->
+      <div class="field-group">
+        <label class="field-label">Расскажи подробнее (необязательно)</label>
+        <textarea class="field" id="f-details"
+                  placeholder="Например: нужен лендинг для кофейни, есть брендбук"></textarea>
+      </div>
+
+      <!-- Резервная кнопка — видна в браузере -->
+      <button class="fb-btn" id="fb-submit" onclick="submit()">
+        Отправить заявку
+      </button>
+    </div>
+
+    <!-- ==================================================
+         ЭКРАН 6: УСПЕХ
+         Финальный экран после отправки брифа.
+    ================================================== -->
+    <div class="screen" id="screen-6">
+      <!-- Анимированная галочка — запускается при входе на экран -->
+      <div class="success-circle" id="success-circle">
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+          <path d="M11 22L18 29L33 15"
+                stroke="#34c759"
+                stroke-width="3.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="success-title">Заявка отправлена!</div>
+
+      <div class="success-sub">Отвечу в течение 24 часов в Telegram</div>
+
+      <!-- Ссылка для прямого контакта -->
+      <a href="https://t.me/viktoriapoltavchenko"
+         class="direct-btn"
+         onclick="openTg(event)">
+        ✈️ Написать напрямую
+      </a>
+
+      <!-- Резервная кнопка закрытия — видна в браузере -->
+      <button class="fb-btn" id="fb-close"
+              style="background:var(--surface);color:var(--text);"
+              onclick="closeFallback()">
+        Закрыть
+      </button>
+    </div>
+
+  </div><!-- /#app -->
+
+  <script>
+    /* ====================================================
+       ИНИЦИАЛИЗАЦИЯ TELEGRAM SDK
+    ==================================================== */
+    const tg    = window.Telegram?.WebApp;
+    // initData непустой только внутри настоящего Telegram — в браузере он пустой
+    const hasTg = !!(tg && tg.initData && tg.initData.length > 0);
+
+    if (tg) {
+      tg.ready();   // сообщаем Telegram что приложение готово
+      tg.expand();  // раскрываем на весь экран
+    }
+
+    /* ====================================================
+       ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ИЗ TELEGRAM
+    ==================================================== */
+    const u          = tg?.initDataUnsafe?.user || {};
+    const firstName  = u.first_name || '';
+    const lastName   = u.last_name  || '';
+    const tgUsername = u.username   || '';
+    const fullName   = [firstName, lastName].filter(Boolean).join(' ') || 'Гость';
+    const initials   = (firstName[0] || '?').toUpperCase();
+
+    // Заполняем экран 5
+    document.getElementById('user-name').textContent = fullName;
+    document.getElementById('user-ava').textContent  = initials;
+    if (tgUsername) {
+      document.getElementById('f-nick').value = '@' + tgUsername;
+    }
+    // Персонализация заголовка «Имя, как с тобой связаться?»
+    if (firstName) {
+      document.getElementById('contact-q').textContent =
+        firstName + ', как с тобой связаться?';
+    }
+
+    /* ====================================================
+       СОСТОЯНИЕ ПРИЛОЖЕНИЯ
+    ==================================================== */
+    let curr      = 0;     // индекс текущего экрана
+    let moving    = false; // флаг блокировки во время анимации
+
+    // Данные брифа — заполняются по шагам
+    const brief = {
+      type:       '',
+      timeline:   '',
+      budget:     '',
+      priorities: [],
+      contact:    '',
+      details:    ''
+    };
+
+    /* ====================================================
+       ПРОГРЕСС-БАР (шаги 1–5)
+    ==================================================== */
+    function setProgress(step) {
+      const bar  = document.getElementById('progress');
+      const fill = document.getElementById('progress-fill');
+      if (step >= 1 && step <= 5) {
+        bar.classList.add('visible');
+        fill.style.width = (step / 5 * 100) + '%';
+      } else {
+        bar.classList.remove('visible');
+      }
+    }
+
+    /* ====================================================
+       УПРАВЛЕНИЕ КНОПКАМИ TELEGRAM
+       MainButton — нативная нижняя кнопка Telegram.
+       BackButton — стрелка «назад» в заголовке.
+    ==================================================== */
+    function syncTg(step) {
+      if (!hasTg) return;
+
+      // BackButton
+      step > 0 ? tg.BackButton.show() : tg.BackButton.hide();
+
+      // MainButton
+      const mb = tg.MainButton;
+      switch (step) {
+        case 0:
+          mb.setText('Начать →');
+          mb.show();
+          mb.enable();
+          break;
+        case 1: case 2: case 3:
+          // Автовыбор — MainButton не нужна
+          mb.hide();
+          break;
+        case 4:
+          // Появляется только после хотя бы одного выбора
+          if (brief.priorities.length > 0) {
+            mb.setText('Далее →');
+            mb.show();
+            mb.enable();
+          } else {
+            mb.hide();
+          }
+          break;
+        case 5:
+          mb.setText('Отправить заявку');
+          mb.show();
+          mb.enable();
+          break;
+        case 6:
+          mb.setText('Закрыть');
+          mb.show();
+          mb.enable();
+          break;
+      }
+    }
+
+    // Клики по Telegram-кнопкам
+    if (hasTg) {
+      tg.MainButton.onClick(() => {
+        if (curr === 0)                               go(1, 'forward');
+        else if (curr === 4 && brief.priorities.length) go(5, 'forward');
+        else if (curr === 5)                          submit();
+        else if (curr === 6)                          tg.close();
+      });
+
+      tg.BackButton.onClick(() => {
+        if (curr > 0) go(curr - 1, 'back');
+      });
+    }
+
+    /* ====================================================
+       НАВИГАЦИЯ МЕЖДУ ЭКРАНАМИ
+       dir: 'forward' — новый экран выезжает справа
+       dir: 'back'    — новый экран выезжает слева
+    ==================================================== */
+    function go(to, dir) {
+      if (moving || to === curr) return;
+      moving = true;
+
+      const elFrom = document.getElementById('screen-' + curr);
+      const elTo   = document.getElementById('screen-' + to);
+
+      const startX = dir === 'forward' ? '105%'  : '-105%';
+      const exitX  = dir === 'forward' ? '-35%'  : '105%';
+
+      // Позиционируем входящий экран без анимации
+      elTo.style.transition = 'none';
+      elTo.style.transform  = `translateX(${startX})`;
+      elTo.classList.add('active');
+
+      // Принудительный reflow — важен для корректного старта анимации
+      elTo.getBoundingClientRect();
+
+      // Запускаем анимацию
+      elTo.style.transition = '';
+      requestAnimationFrame(() => {
+        elFrom.style.transform = `translateX(${exitX})`;
+        elTo.style.transform   = 'translateX(0)';
+      });
+
+      setTimeout(() => {
+        // Убираем старый экран за правый край
+        elFrom.classList.remove('active');
+        elFrom.style.transition = 'none';
+        elFrom.style.transform  = 'translateX(100%)';
+        elFrom.getBoundingClientRect();
+        elFrom.style.transition = '';
+
+        curr   = to;
+        moving = false;
+
+        setProgress(curr);
+        syncTg(curr);
+        syncFallbacks();
+
+        // Анимация галочки при переходе на экран успеха
+        if (curr === 6) triggerSuccessAnim();
+      }, 280);
+    }
+
+    /* ====================================================
+       АНИМАЦИЯ ГАЛОЧКИ НА ЭКРАНЕ УСПЕХА
+    ==================================================== */
+    function triggerSuccessAnim() {
+      const circle = document.getElementById('success-circle');
+      circle.classList.remove('pop');
+      circle.getBoundingClientRect();
+      circle.classList.add('pop');
+    }
+
+    /* ====================================================
+       РЕЗЕРВНЫЕ КНОПКИ (браузер без Telegram)
+    ==================================================== */
+    function syncFallbacks() {
+      if (hasTg) return; // В Telegram используем нативные кнопки
+
+      toggle('fb-back',   curr >= 1 && curr <= 5);
+      toggle('fb-start',  curr === 0);
+      toggle('fb-next4',  curr === 4 && brief.priorities.length > 0);
+      toggle('fb-submit', curr === 5);
+      toggle('fb-close',  curr === 6);
+    }
+
+    function toggle(id, visible) {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('show', visible);
+      // Если переключаем кнопку «Назад» — добавляем класс активному экрану
+      if (id === 'fb-back') {
+        document.getElementById('screen-' + curr)
+          ?.classList.toggle('has-back', visible);
+      }
+    }
+
+    /* ====================================================
+       ВЫБОР КАРТОЧЕК
+    ==================================================== */
+
+    // Одиночный выбор (шаги 1, 2, 3) — сразу переходим дальше
+    function pickOne(card, step) {
+      const grid = card.closest('.cards');
+      grid.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+
+      const val = card.dataset.value;
+      if (step === 1) brief.type     = val;
+      if (step === 2) brief.timeline = val;
+      if (step === 3) brief.budget   = val;
+
+      // Тактильный отклик — ощущается как нативный
+      tg?.HapticFeedback?.selectionChanged();
+
+      // Небольшая пауза: пользователь видит выбор до перехода
+      setTimeout(() => go(step + 1, 'forward'), 220);
+    }
+
+    // Множественный выбор (шаг 4)
+    function pickMany(card) {
+      card.classList.toggle('selected');
+
+      brief.priorities = [];
+      document.querySelectorAll('#cards-4 .card.selected').forEach(c => {
+        brief.priorities.push(c.dataset.value);
+      });
+
+      tg?.HapticFeedback?.selectionChanged();
+      syncTg(curr);
+      syncFallbacks();
+    }
+
+    /* ====================================================
+       ОТПРАВКА БРИФА
+       tg.sendData() — доставляет JSON в бот как web_app_data.
+       Работает только внутри Telegram (открыто через кнопку бота).
+    ==================================================== */
+    function submit() {
+      brief.contact = document.getElementById('f-contact').value.trim();
+      brief.details = document.getElementById('f-details').value.trim();
+
+      const payload = {
+        name:       fullName,
+        username:   tgUsername,
+        type:       brief.type,
+        timeline:   brief.timeline,
+        budget:     brief.budget,
+        priorities: brief.priorities.join(', '),
+        contact:    brief.contact,
+        details:    brief.details
+      };
+
+      // Показываем спиннер на кнопке
+      if (hasTg) {
+        tg.MainButton.showProgress(false);
+        tg.MainButton.disable();
+      }
+
+      try {
+        tg?.sendData(JSON.stringify(payload));
+      } catch (e) {
+        // Вне контекста бота sendData бросает ошибку — игнорируем при тестировании
+        console.info('[tg-app] sendData недоступен (вне Telegram):', e.message);
+      }
+
+      go(6, 'forward');
+      tg?.HapticFeedback?.notificationOccurred('success');
+    }
+
+    /* ====================================================
+       ОТКРЫТИЕ ССЫЛКИ TELEGRAM
+       Внутри Mini App ссылки открываются через tg.openTelegramLink
+       для корректного перехода в нативный Telegram.
+    ==================================================== */
+    function openTg(e) {
+      if (tg?.openTelegramLink) {
+        e.preventDefault();
+        tg.openTelegramLink('https://t.me/viktoriapoltavchenko');
+      }
+      // Если нет SDK — href срабатывает как обычная ссылка
+    }
+
+    /* Кнопка закрытия в браузере */
+    function closeFallback() {
+      if (hasTg) { tg.close(); return; }
+      window.close();
+    }
+
+    /* ====================================================
+       АДАПТАЦИЯ ПОД ВЫСОТУ VIEWPORT
+       На iOS клавиатура уменьшает доступную высоту.
+       Слушаем событие Telegram и пересчитываем #app.
+    ==================================================== */
+    if (tg) {
+      const applyHeight = () => {
+        document.getElementById('app').style.height = tg.viewportHeight + 'px';
+      };
+      applyHeight();
+      tg.onEvent('viewportChanged', applyHeight);
+    }
+
+    /* ====================================================
+       ЗАПУСК
+    ==================================================== */
+    setProgress(0);
+    syncTg(0);
+    syncFallbacks();
+  </script>
+
+</body>
+</html>
