@@ -1874,8 +1874,7 @@ footer {
       <div class="fade-up">
         <div class="contact-form glass">
           <form id="contactForm" onsubmit="handleSubmit(event)">
-            <input type="hidden" name="_subject" value="Новая заявка с сайта Виктории Полтавченко">
-            <div class="form-group">
+<div class="form-group">
               <label for="name">Имя *</label>
               <input type="text" id="name" name="name" placeholder="Как вас зовут?" required>
             </div>
@@ -2024,13 +2023,18 @@ async function handleSubmit(e) {
   btn.style.opacity = '0.75';
 
   try {
-    const res = await fetch('https://formspree.io/f/mzdygpao', {
-      method: 'POST',
-      headers: { 'Accept': 'application/json' },
-      body: new FormData(form)
-    });
+    const data = new FormData(form);
+    data.append('access_key', '95a698d3-f7e8-4a29-874c-993817c7263a');
+    data.append('subject', 'Новая заявка с сайта Виктории Полтавченко');
+    data.append('from_name', 'Сайт vikavka1970-lab.github.io');
 
-    if (res.ok) {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: data
+    });
+    const json = await res.json();
+
+    if (json.success) {
       form.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
       form.style.opacity = '0';
       form.style.transform = 'scale(0.96)';
@@ -2039,8 +2043,7 @@ async function handleSubmit(e) {
         success.style.display = 'block';
       }, 400);
     } else {
-      const json = await res.json();
-      throw new Error(json.errors ? json.errors.map(e => e.message).join(', ') : 'Ошибка отправки');
+      throw new Error(json.message || 'Ошибка отправки');
     }
   } catch (err) {
     btn.innerHTML = originalHTML;
