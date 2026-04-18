@@ -1,0 +1,16 @@
+node_modules/
+.playwright-mcp/
+.agents/
+.claude/
+.mcp.json
+
+# Preview/debug screenshots
+portfolio-after.png
+portfolio-bottom*.png
+portfolio-77.png
+portfolio-80.png
+desktop-hero.png
+desktop-portfolio.png
+
+# Image backups (source PNG backups during editing)
+images/*.backup.png

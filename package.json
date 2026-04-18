@@ -4,6 +4,7 @@
     "screenshot": "node scripts/screenshot.js"
   },
   "devDependencies": {
-    "puppeteer": "^24.40.0"
+    "puppeteer": "^24.40.0",
+    "sharp": "^0.34.5"
   }
 }
