@@ -65,15 +65,10 @@
     }
 
     /* ============================================================
-       КНОПКА «НАЗАД» (резерв для браузера без Telegram)
-       В Telegram используется нативный BackButton в хедере.
+       КНОПКА «НАЗАД» — внутри каждого шага, часть потока
     ============================================================ */
-    #fb-back {
-      position: fixed;
-      top: 8px;
-      left: 8px;
-      z-index: 200;
-      display: none;
+    .back-btn {
+      display: inline-flex;
       align-items: center;
       gap: 4px;
       background: none;
@@ -83,19 +78,12 @@
       font-weight: 500;
       font-family: inherit;
       cursor: pointer;
-      padding: 8px;
-      border-radius: 8px;
-      transition: opacity 0.15s;
+      padding: 10px 0;
+      margin-bottom: 4px;
+      min-height: 44px;
     }
 
-    #fb-back:active { opacity: 0.6; }
-
-    #fb-back.show { display: flex; }
-
-    /* Когда кнопка «Назад» видна — сдвигаем заголовок шага вниз */
-    .has-back .step-header {
-      padding-top: 44px;
-    }
+    .back-btn:active { opacity: 0.6; }
 
     /* ============================================================
        ПРОГРЕСС-БАР
@@ -439,6 +427,12 @@
 
     .fb-btn.show { display: flex; }
 
+    /* Серая кнопка пока не активна (экран 4 без выбора) */
+    .fb-btn.inactive {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
     /* ============================================================
        ЭКРАН 6 — УСПЕХ
     ============================================================ */
@@ -516,8 +510,6 @@
     <div id="progress-fill"></div>
   </div>
 
-  <!-- Кнопка «Назад» для браузера (в Telegram — нативный BackButton) -->
-  <button id="fb-back" onclick="go(curr - 1, 'back')">‹ Назад</button>
 
   <div id="app">
 
@@ -551,6 +543,7 @@
     ================================================== -->
     <div class="screen" id="screen-1">
       <div class="step-header">
+        <button class="back-btn" onclick="go(0,'back')">‹ Назад</button>
         <div class="step-num">Шаг 1 из 5</div>
         <div class="step-q">Что нужно сделать?</div>
       </div>
@@ -589,6 +582,7 @@
     ================================================== -->
     <div class="screen" id="screen-2">
       <div class="step-header">
+        <button class="back-btn" onclick="go(1,'back')">‹ Назад</button>
         <div class="step-num">Шаг 2 из 5</div>
         <div class="step-q">Когда нужен результат?</div>
       </div>
@@ -627,6 +621,7 @@
     ================================================== -->
     <div class="screen" id="screen-3">
       <div class="step-header">
+        <button class="back-btn" onclick="go(2,'back')">‹ Назад</button>
         <div class="step-num">Шаг 3 из 5</div>
         <div class="step-q">Примерный бюджет?</div>
       </div>
@@ -670,6 +665,7 @@
     ================================================== -->
     <div class="screen" id="screen-4">
       <div class="step-header">
+        <button class="back-btn" onclick="go(3,'back')">‹ Назад</button>
         <div class="step-num">Шаг 4 из 5</div>
         <div class="step-q">Что важнее всего?</div>
         <div class="step-hint">Можно выбрать несколько</div>
@@ -706,8 +702,9 @@
         </div>
       </div>
 
-      <!-- Резервная кнопка — видна в браузере после ≥1 выбора -->
-      <button class="fb-btn" id="fb-next4" onclick="go(5,'forward')">
+      <!-- Кнопка «Далее» — всегда видна, серая пока нет выбора -->
+      <button class="fb-btn show" id="fb-next4"
+              onclick="brief.priorities.length && go(5,'forward')">
         Далее →
       </button>
     </div>
@@ -719,6 +716,7 @@
     ================================================== -->
     <div class="screen" id="screen-5">
       <div class="step-header">
+        <button class="back-btn" onclick="go(4,'back')">‹ Назад</button>
         <div class="step-num">Шаг 5 из 5</div>
         <div class="step-q" id="contact-q">Как с тобой связаться?</div>
       </div>
@@ -987,21 +985,17 @@
     function syncFallbacks() {
       // Показываем все кнопки всегда — в настоящем Telegram они дублируют нативные,
       // но не мешают: нативный MainButton внизу, HTML-кнопка внутри контента
-      toggle('fb-back',   curr >= 1 && curr <= 5);
       toggle('fb-start',  curr === 0);
-      toggle('fb-next4',  curr === 4 && brief.priorities.length > 0);
       toggle('fb-submit', curr === 5);
       toggle('fb-close',  curr === 6);
+      // «Далее» на экране 4: всегда видна, но серая пока нет выбора
+      const next4 = document.getElementById('fb-next4');
+      if (next4) next4.classList.toggle('inactive', brief.priorities.length === 0);
     }
 
     function toggle(id, visible) {
       const el = document.getElementById(id);
       if (el) el.classList.toggle('show', visible);
-      // Если переключаем кнопку «Назад» — добавляем класс активному экрану
-      if (id === 'fb-back') {
-        document.getElementById('screen-' + curr)
-          ?.classList.toggle('has-back', visible);
-      }
     }
 
     /* ====================================================
