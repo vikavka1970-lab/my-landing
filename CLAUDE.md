@@ -25,26 +25,7 @@
 - Исключение: Web3Forms для формы обратной связи (один `fetch`)
 - Dev-зависимость: `puppeteer` (`package.json`) — для автоматических скриншотов портфолио. В продакшн-сборку не попадает.
 
-**Скриншоты для портфолио** — делаются командой:
-```
-npm run screenshot -- <url> <имя-файла>
-npm run screenshot -- https://example.com realty-site
-npm run screenshot -- https://example.com realty-site --all   # десктоп + мобайл
-```
-Файл сохраняется в `images/`. Скрипт: `scripts/screenshot.js`
-
-**При создании новой страницы** — обязательно копировать блок с CSS-переменными, шрифтами, grain texture, cursor, кнопками и fade-анимациями из существующей страницы. Все страницы должны выглядеть единым целым.
-
-**Чеклист новой страницы (минимум):**
-- [ ] CSS-переменные (`--bg`, `--surface`, `--border`, `--accent`, `--cyan`, `--text`, `--muted`)
-- [ ] Подключение Google Fonts: Syne + DM Sans + Syne Mono
-- [ ] Grain texture overlay (`#grain` + `@keyframes grain`)
-- [ ] Кастомный курсор (`.cursor-dot` + `.cursor-ring` + скрипт в конце файла)
-- [ ] Прогресс-бар скролла (`#scroll-progress`)
-- [ ] Fade-up анимации (`.fade-up` + `IntersectionObserver` в скрипте)
-- [ ] Навигация: логотип «ВП» → `index.html`, кнопка «Обсудить проект» → `index.html#contacts`
-- [ ] Адаптивность: `@media` для `640px`, `860px`, `1024px`
-- [ ] `<title>` и OG-теги (`og:title`, `og:description`, `og:image`)
+**При создании новой страницы** — копировать блоки (CSS-переменные, шрифты, grain, cursor, fade-анимации) из существующей, чтобы сайт выглядел единым целым. Полный чеклист и команды для скриншотов: `docs/NEW-PAGE-CHECKLIST.md`.
 
 ---
 
@@ -145,20 +126,10 @@ git push origin master
 
 ---
 
-## Контакты проекта
-
-| | |
-|---|---|
-| Telegram | @viktoriapoltavchenko |
-| Email | vikavka1970@gmail.com |
-| GitHub | vikavka1970-lab |
-
----
-
 ## Что ещё почитать
 
-- `project.md` — полное описание проекта, секции, стек, что планируется
+- `project.md` — описание проекта, секции, стек, контакты
 - `PLAN.md` — живой план: что сделано, что в процессе, что запланировано
 - `docs/CONTENT-GUIDE.md` — как обновлять контент сайта
-- `brief.md` — требования и контент-план
-- `README.md` — запуск, деплой, Web3Forms
+- `docs/NEW-PAGE-CHECKLIST.md` — чеклист новой страницы + команды скриншотов
+- `README.md` — запуск, деплой, Web3Forms, Puppeteer

@@ -3,6 +3,7 @@ node_modules/
 .agents/
 .claude/
 .mcp.json
+.mcp.json.disabled
 
 # Preview/debug screenshots
 portfolio-after.png

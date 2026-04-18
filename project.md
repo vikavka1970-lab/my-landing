@@ -6,6 +6,11 @@
 
 **Живой сайт:** https://vikavka1970-lab.github.io/my-landing/
 
+**Контакты:**
+- Telegram: `@viktoriapoltavchenko`
+- Email: `vikavka1970@gmail.com`
+- GitHub: `vikavka1970-lab`
+
 ---
 
 ## Для кого
