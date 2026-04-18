@@ -1423,7 +1423,7 @@ footer {
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
         </div>
         <h3>Приложения</h3>
-        <p>Мобильный продукт, которым пользуются каждый день. От идеи до запуска — один человек, который видит всю картину целиком.</p>
+        <p>Мобильный продукт, которым пользуются каждый день. От идеи до запуска — без потерь на передаче задачи между людьми.</p>
         <ul class="service-bullets" style="--dot-color:var(--cyan)">
           <li>Веб-приложения, PWA, MVP для стартапов</li>
           <li>Быстрый старт — от идеи до прототипа</li>
@@ -1450,8 +1450,8 @@ footer {
 
     <div class="services-cta fade-up">
       <p>
-        <span>Один специалист — вся цифровая экосистема.</span>
-        Сайт, приложение и автоматизация работают как единый организм, а не три несвязанных части.
+        <span>Сайт, приложение и автоматизация — как единый организм,</span>
+        а не три несвязанных части от разных подрядчиков.
       </p>
       <a href="pricing.html" class="btn btn-ghost services-cta-btn">
         Посмотреть тарифы
@@ -1669,7 +1669,7 @@ footer {
 
     <div class="faq-list fade-up">
 
-      <div class="faq-item">
+      <div class="faq-item open">
         <button class="faq-q" onclick="toggleFaq(this)">
           Сколько стоит сайт или ИИ-агент?
           <span class="faq-icon">+</span>
@@ -1811,18 +1811,8 @@ footer {
               <input type="text" id="name" name="name" placeholder="Как вас зовут?" required>
             </div>
             <div class="form-group">
-              <label for="contact">Email или Telegram *</label>
-              <input type="text" id="contact" name="contact" placeholder="your@email.com или @telegram" required>
-            </div>
-            <div class="form-group">
-              <label for="type">Тип проекта</label>
-              <select id="type" name="type">
-                <option value="">Выберите направление</option>
-                <option value="site">Сайт под ключ</option>
-                <option value="app">Приложение</option>
-                <option value="ai">ИИ-агент / автоматизация</option>
-                <option value="other">Другое</option>
-              </select>
+              <label for="contact">Telegram или email *</label>
+              <input type="text" id="contact" name="contact" placeholder="@telegram или your@email.com" required>
             </div>
             <div class="form-group">
               <label for="message">Коротко о задаче *</label>
@@ -1960,7 +1950,7 @@ async function handleSubmit(e) {
 
   const data = new FormData(form);
   data.append('access_key', '95a698d3-f7e8-4a29-874c-993817c7263a');
-  data.append('subject', 'Новая заявка с сайта — ' + (data.get('type') || 'без типа'));
+  data.append('subject', 'Новая заявка с сайта');
   data.append('from_name', 'Сайт Виктории Полтавченко');
 
   try {
