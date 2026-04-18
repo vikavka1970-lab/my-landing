@@ -520,7 +520,7 @@ section { padding: 100px 0; }
 
 .portfolio-grid {
   display: grid; gap: 20px;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   overflow: hidden;
 }
 .portfolio-card {
@@ -534,9 +534,6 @@ section { padding: 100px 0; }
   transform: translateY(-8px) scale(1.01);
   border-color: rgba(99,102,241,0.4);
   box-shadow: 0 24px 64px rgba(99,102,241,0.1), 0 8px 24px rgba(0,0,0,0.3);
-}
-.portfolio-card:first-child {
-  grid-column: 1 / -1;
 }
 
 .card-header {
@@ -645,6 +642,41 @@ section { padding: 100px 0; }
   55%  { transform: translateY(-77%); }
   100% { transform: translateY(0); }
 }
+
+/* Phone-frame variant for Зелёный учёт */
+.portfolio-card--phone .mockup-col {
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 24px;
+  background: linear-gradient(135deg, rgba(34,197,94,0.08), rgba(6,182,212,0.04));
+}
+.phone-frame {
+  width: 240px; height: 480px;
+  background: #0a0a0a;
+  border-radius: 36px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04) inset;
+  position: relative;
+  flex-shrink: 0;
+}
+.phone-notch {
+  position: absolute; top: 18px; left: 50%;
+  transform: translateX(-50%);
+  width: 80px; height: 6px;
+  background: #000; border-radius: 3px;
+  z-index: 2;
+}
+.phone-screen {
+  width: 100%; height: 100%;
+  border-radius: 28px; overflow: hidden;
+  background: #EEF7EC;
+  position: relative;
+}
+.phone-screen img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: top;
+  display: block;
+}
 .portfolio-card--wide .info-col {
   padding: 32px 32px 32px 0;
   display: flex;
@@ -679,6 +711,13 @@ section { padding: 100px 0; }
   }
   .portfolio-card--wide .info-col {
     padding: 0 24px 24px;
+  }
+  .portfolio-card--phone .mockup-col {
+    padding: 32px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .phone-frame {
+    width: 200px; height: 400px;
   }
 }
 .mockup-placeholder {
@@ -1475,35 +1514,36 @@ footer {
       </div>
 
       <!-- Card 2 -->
-      <div class="portfolio-card glass fade-up">
-        <div class="mockup">
-          <div class="mockup-bar">
-            <div class="mockup-dot"></div>
-            <div class="mockup-dot"></div>
-            <div class="mockup-dot"></div>
-            <div class="mockup-url">vikavka1970-lab.github.io/zelyony-uchet</div>
-          </div>
-          <div class="mockup-screen" style="background:#EEF7EC; padding:0; overflow:hidden;">
-            <img src="images/zelyony-uchet-mobile.png" alt="Зелёный учёт — приложение учёта для мастерской" style="width:100%;height:100%;object-fit:cover;object-position:top;">
+      <div class="portfolio-card portfolio-card--wide portfolio-card--phone glass fade-up">
+        <!-- Left: phone mockup -->
+        <div class="mockup-col">
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <img src="images/zelyony-uchet-mobile.png" alt="Зелёный учёт — приложение учёта для мастерской">
+            </div>
           </div>
         </div>
-        <div class="card-header">
-          <span class="card-type" style="background:rgba(34,197,94,0.12);color:#4ade80">PWA-приложение</span>
-          <span class="card-status card-status--done">✓ Завершён</span>
-        </div>
-        <h3>Зелёный учёт</h3>
-        <p>Мобильное PWA-приложение учёта доходов и расходов для мастерской по озеленению. Работает офлайн, устанавливается на телефон как обычное приложение.</p>
-        <ul class="card-features">
-          <li>Учёт доходов и расходов по категориям</li>
-          <li>Работает офлайн (Service Worker)</li>
-          <li>Устанавливается на телефон (PWA)</li>
-          <li>Хранение данных локально — без сервера</li>
-        </ul>
-        <div class="stack-tags">
-          <span class="tag">HTML</span>
-          <span class="tag">JavaScript</span>
-          <span class="tag">PWA</span>
-          <span class="tag">Tailwind</span>
+        <!-- Right: project info -->
+        <div class="info-col">
+          <div class="card-header">
+            <span class="card-type" style="background:rgba(34,197,94,0.12);color:#4ade80">PWA-приложение</span>
+            <span class="card-status card-status--done">✓ Завершён</span>
+          </div>
+          <h3>Зелёный учёт</h3>
+          <p>Мобильное PWA-приложение учёта доходов и расходов для мастерской по озеленению. Работает офлайн, устанавливается на телефон как обычное приложение.</p>
+          <ul class="card-features">
+            <li>Учёт доходов и расходов по категориям</li>
+            <li>Работает офлайн (Service Worker)</li>
+            <li>Устанавливается на телефон (PWA)</li>
+            <li>Хранение данных локально — без сервера</li>
+          </ul>
+          <div class="stack-tags">
+            <span class="tag">HTML</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">PWA</span>
+            <span class="tag">Tailwind</span>
+          </div>
         </div>
       </div>
 
