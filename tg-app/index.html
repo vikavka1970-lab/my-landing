@@ -985,10 +985,9 @@
        РЕЗЕРВНЫЕ КНОПКИ (браузер без Telegram)
     ==================================================== */
     function syncFallbacks() {
-      // «Назад» показываем всегда — в Telegram дублирует нативную стрелку, не мешает
-      toggle('fb-back', curr >= 1 && curr <= 5);
-
-      if (hasTg) return; // остальные кнопки — только вне Telegram
+      // Показываем все кнопки всегда — в настоящем Telegram они дублируют нативные,
+      // но не мешают: нативный MainButton внизу, HTML-кнопка внутри контента
+      toggle('fb-back',   curr >= 1 && curr <= 5);
       toggle('fb-start',  curr === 0);
       toggle('fb-next4',  curr === 4 && brief.priorities.length > 0);
       toggle('fb-submit', curr === 5);
