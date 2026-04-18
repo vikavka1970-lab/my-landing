@@ -2033,7 +2033,7 @@ async function handleSubmit(e) {
     });
     const json = await res.json();
 
-    if (json.success) {
+    if (res.ok) {
       form.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
       form.style.opacity = '0';
       form.style.transform = 'scale(0.96)';
