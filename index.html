@@ -2139,7 +2139,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   ];
   const el = document.getElementById('typewriter');
   const cursor = document.querySelector('.type-cursor');
-  if (!el) return;
+  if (!el || !cursor) return;
 
   let phraseIdx = 0, charIdx = 0, deleting = false;
 

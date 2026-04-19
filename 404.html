@@ -200,8 +200,8 @@ if (dot && ring) {
     ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
     requestAnimationFrame(animate);
   })();
-  document.addEventListener('mousedown', () => ring.style.cssText += 'width:24px;height:24px;');
-  document.addEventListener('mouseup',   () => ring.style.cssText += 'width:32px;height:32px;');
+  document.addEventListener('mousedown', () => { ring.style.width = '24px'; ring.style.height = '24px'; });
+  document.addEventListener('mouseup',   () => { ring.style.width = '32px'; ring.style.height = '32px'; });
 }
 </script>
 </body>
