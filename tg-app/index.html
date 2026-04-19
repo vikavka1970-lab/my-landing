@@ -702,8 +702,8 @@
         </div>
       </div>
 
-      <!-- Кнопка «Далее» — всегда видна, серая пока нет выбора -->
-      <button class="fb-btn show" id="fb-next4"
+      <!-- Кнопка «Далее» — видна в браузере, серая пока нет выбора -->
+      <button class="fb-btn" id="fb-next4"
               onclick="brief.priorities.length && go(5,'forward')">
         Далее →
       </button>
@@ -983,14 +983,24 @@
        РЕЗЕРВНЫЕ КНОПКИ (браузер без Telegram)
     ==================================================== */
     function syncFallbacks() {
-      // Показываем все кнопки всегда — в настоящем Telegram они дублируют нативные,
-      // но не мешают: нативный MainButton внизу, HTML-кнопка внутри контента
+      // В Telegram есть нативный MainButton — HTML-кнопки не нужны
+      if (hasTg) {
+        toggle('fb-start',  false);
+        toggle('fb-submit', false);
+        toggle('fb-close',  false);
+        const next4 = document.getElementById('fb-next4');
+        if (next4) next4.classList.remove('show');
+        return;
+      }
+      // В браузере показываем HTML-кнопки вместо нативных
       toggle('fb-start',  curr === 0);
       toggle('fb-submit', curr === 5);
       toggle('fb-close',  curr === 6);
-      // «Далее» на экране 4: всегда видна, но серая пока нет выбора
       const next4 = document.getElementById('fb-next4');
-      if (next4) next4.classList.toggle('inactive', brief.priorities.length === 0);
+      if (next4) {
+        next4.classList.toggle('show', curr === 4);
+        next4.classList.toggle('inactive', brief.priorities.length === 0);
+      }
     }
 
     function toggle(id, visible) {
