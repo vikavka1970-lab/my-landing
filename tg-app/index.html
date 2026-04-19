@@ -502,6 +502,27 @@
 
     .direct-btn:active { opacity: 0.7; }
 
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 200px;
+      height: var(--touch);
+      padding: 0 24px;
+      background: rgba(42, 171, 238, 0.12);
+      color: var(--accent);
+      border: none;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .share-btn:active { opacity: 0.7; }
+
     /* ============================================================
        OFFER MODAL — появляется один раз при первом открытии
     ============================================================ */
@@ -634,9 +655,9 @@
       <!-- Аватар. Заменить на <img src="victoria.png"> когда будет фото -->
       <div class="welcome-avatar">ВП</div>
 
-      <div class="welcome-title">Привет! Расскажи о своём проекте</div>
+      <div class="welcome-title" id="welcome-title">Привет! Расскажи о своём проекте</div>
 
-      <div class="welcome-sub">5 вопросов — займёт 2 минуты</div>
+      <div class="welcome-sub">Помогу разобраться что нужно и сколько стоит — 5 вопросов, 2 минуты</div>
 
       <div class="status-badge">
         <span class="status-dot"></span>
@@ -896,6 +917,11 @@
         ✈️ Написать напрямую
       </a>
 
+      <!-- Поделиться с другом -->
+      <button class="share-btn" onclick="shareBot()">
+        🔗 Поделиться с другом
+      </button>
+
       <!-- Резервная кнопка закрытия — видна в браузере -->
       <button class="fb-btn" id="fb-close"
               style="background:var(--surface);color:var(--text);"
@@ -952,6 +978,12 @@
     if (tgUsername) {
       document.getElementById('f-nick').value = '@' + tgUsername;
     }
+    // Персонализация приветствия по имени
+    if (firstName) {
+      document.getElementById('welcome-title').textContent =
+        firstName + ', расскажи о своём проекте';
+    }
+
     // Персонализация заголовка «Имя, как с тобой связаться?»
     if (firstName) {
       document.getElementById('contact-q').textContent =
@@ -1221,6 +1253,17 @@
         tg.openTelegramLink('https://t.me/viktoriapoltavchenko');
       }
       // Если нет SDK — href срабатывает как обычная ссылка
+    }
+
+    /* Поделиться ботом */
+    function shareBot() {
+      const link = 'https://t.me/Lendingferst_bot/app';
+      const text = 'Попробуй — за 2 минуты расскажешь о проекте и получишь предложение по сайту, приложению или AI-агенту 👇';
+      if (tg?.openTelegramLink) {
+        tg.openTelegramLink('https://t.me/share/url?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent(text));
+      } else {
+        window.open('https://t.me/share/url?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent(text), '_blank');
+      }
     }
 
     /* Кнопка закрытия в браузере */
