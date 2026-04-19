@@ -501,6 +501,118 @@
     }
 
     .direct-btn:active { opacity: 0.7; }
+
+    /* ============================================================
+       OFFER MODAL — появляется один раз при первом открытии
+    ============================================================ */
+    #offer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    #offer-overlay.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .offer-card {
+      background: var(--bg);
+      border-radius: 20px;
+      padding: 28px 24px 24px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      transform: scale(0.88) translateY(20px);
+      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    #offer-overlay.visible .offer-card {
+      transform: scale(1) translateY(0);
+    }
+
+    .offer-emoji {
+      font-size: 56px;
+      line-height: 1;
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .offer-title {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .offer-sub {
+      font-size: 15px;
+      color: var(--hint);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .offer-bullets {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .offer-bullets li {
+      font-size: 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.45;
+    }
+
+    .offer-bullets li span:first-child {
+      flex-shrink: 0;
+      font-size: 16px;
+    }
+
+    .offer-btn {
+      display: block;
+      width: 100%;
+      height: 52px;
+      background: #2aabee;
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 17px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      margin-bottom: 14px;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .offer-btn:active {
+      opacity: 0.85;
+      transform: scale(0.98);
+    }
+
+    .offer-skip {
+      display: inline-block;
+      font-size: 14px;
+      color: var(--hint);
+      background: none;
+      border: none;
+      font-family: inherit;
+      cursor: pointer;
+      padding: 6px 12px;
+    }
   </style>
 </head>
 <body>
@@ -793,6 +905,23 @@
     </div>
 
   </div><!-- /#app -->
+
+  <!-- OFFER MODAL — показывается один раз при первом открытии -->
+  <div id="offer-overlay">
+    <div class="offer-card">
+      <span class="offer-emoji">🎁</span>
+      <div class="offer-title">Скидка 10% на первый заказ</div>
+      <div class="offer-sub">Подпишитесь на бота — получите промокод в личное сообщение</div>
+      <ul class="offer-bullets">
+        <li><span>🔔</span><span>Первыми узнаёте об акциях и спецпредложениях</span></li>
+        <li><span>💡</span><span>Советы по сайтам и AI-автоматизации для вашего бизнеса</span></li>
+        <li><span>⚡</span><span>Приоритет в очереди — ваш проект стартует быстрее</span></li>
+        <li><span>🎁</span><span>Промокод −10% приходит сразу после подписки</span></li>
+      </ul>
+      <button class="offer-btn" onclick="offerAccept()">Получить скидку 10%</button>
+      <button class="offer-skip" onclick="offerSkip()">Пропустить</button>
+    </div>
+  </div>
 
   <script>
     /* ====================================================
@@ -1114,11 +1243,44 @@
     }
 
     /* ====================================================
+       OFFER MODAL — один раз при первом открытии
+    ==================================================== */
+    const OFFER_KEY = 'vp_offer_seen';
+
+    function showOffer() {
+      document.getElementById('offer-overlay').classList.add('visible');
+    }
+
+    function hideOffer() {
+      const overlay = document.getElementById('offer-overlay');
+      overlay.classList.remove('visible');
+      overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
+    }
+
+    function offerAccept() {
+      localStorage.setItem(OFFER_KEY, '1');
+      const link = 'https://t.me/Lendingferst_bot?start=from_app';
+      if (tg?.openTelegramLink) tg.openTelegramLink(link);
+      else window.open(link, '_blank');
+      hideOffer();
+    }
+
+    function offerSkip() {
+      localStorage.setItem(OFFER_KEY, '1');
+      hideOffer();
+    }
+
+    /* ====================================================
        ЗАПУСК
     ==================================================== */
     setProgress(0);
     syncTg(0);
     syncFallbacks();
+
+    // Показываем оффер при первом открытии (задержка — приложение должно успеть загрузиться)
+    if (!localStorage.getItem(OFFER_KEY)) {
+      setTimeout(showOffer, 600);
+    }
   </script>
 
 </body>
