@@ -634,6 +634,9 @@
       cursor: pointer;
       padding: 6px 12px;
     }
+
+    /* Скрываем кастомную кнопку «Назад» внутри Telegram — там есть нативная */
+    body.has-tg .back-btn { display: none; }
   </style>
 </head>
 <body>
@@ -764,6 +767,7 @@
           <div class="card-icon">💸</div>
           <div class="card-body">
             <div class="card-title">До 30 000 ₽</div>
+            <div class="card-sub">Простой лендинг или базовая автоматизация</div>
           </div>
           <div class="check"></div>
         </div>
@@ -771,6 +775,7 @@
           <div class="card-icon">💰</div>
           <div class="card-body">
             <div class="card-title">30 000 – 80 000 ₽</div>
+            <div class="card-sub">Корпоративный сайт или веб-приложение</div>
           </div>
           <div class="check"></div>
         </div>
@@ -778,6 +783,7 @@
           <div class="card-icon">💎</div>
           <div class="card-body">
             <div class="card-title">80 000 – 150 000 ₽</div>
+            <div class="card-sub">Сложный проект, AI-агент под ключ</div>
           </div>
           <div class="check"></div>
         </div>
@@ -785,6 +791,7 @@
           <div class="card-icon">🤝</div>
           <div class="card-body">
             <div class="card-title">Обсудим на звонке</div>
+            <div class="card-sub">Нестандартная задача или крупный проект</div>
           </div>
           <div class="check"></div>
         </div>
@@ -962,6 +969,8 @@
       tg.expand();  // раскрываем на весь экран
     }
 
+    if (hasTg) document.body.classList.add('has-tg');
+
     /* ====================================================
        ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ИЗ TELEGRAM
     ==================================================== */
@@ -1125,8 +1134,11 @@
         syncTg(curr);
         syncFallbacks();
 
-        // Анимация галочки при переходе на экран успеха
-        if (curr === 6) triggerSuccessAnim();
+        // Анимация галочки и оффер при переходе на экран успеха
+        if (curr === 6) {
+          triggerSuccessAnim();
+          if (!localStorage.getItem(OFFER_KEY)) setTimeout(showOffer, 1200);
+        }
       }, 280);
     }
 
@@ -1320,10 +1332,7 @@
     syncTg(0);
     syncFallbacks();
 
-    // Показываем оффер при первом открытии (задержка — приложение должно успеть загрузиться)
-    if (!localStorage.getItem(OFFER_KEY)) {
-      setTimeout(showOffer, 600);
-    }
+    // Оффер показывается на экране успеха (экран 6), не при открытии
   </script>
 
 </body>
