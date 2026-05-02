@@ -80,8 +80,8 @@
 
 | Переменная | Значение | Где взять |
 |---|---|---|
-| `BOT_TOKEN` | `8615590215:AAGRCTOxNxz9kx-VA5b2XbLUSSXMyC8_BAY` | Уже есть в `.env` |
-| `VICTORIA_CHAT_ID` | Числовой ID Telegram-аккаунта Виктории | Узнать через `@userinfobot` |
+| `BOT_TOKEN` | Получить у `@BotFather` → `/mybots` → API Token | Хранить только в `.env` и Vercel Settings |
+| `VICTORIA_CHAT_ID` | `931351685` | Получено через `getUpdates` API |
 
 `.env` добавлен в `.gitignore`. В деплой (Railway) передаются через панель управления.
 
