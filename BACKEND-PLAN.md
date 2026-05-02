@@ -10,7 +10,7 @@
 | Компонент | Как работает сейчас |
 |---|---|
 | Лендинг `index.html`, `pricing.html` | Статические файлы. Бэкенд не нужен |
-| Форма на лендинге | Web3Forms (внешний сервис). Ключ `95a698d3-f7e8-4a29-874c-993817c7263a`. Письма уходят на `vikavka1970@gmail.com`. Бэкенд не нужен |
+| Форма на лендинге | Web3Forms (внешний сервис). Письма уходят на `vikavka1970@gmail.com`. Бэкенд не нужен |
 | Mini App `tg-app/index.html` | Статика на Vercel. Бэкенд не нужен |
 | Offer modal | Состояние в `localStorage` ключ `vp_offer_seen`. Бэкенд не нужен |
 
@@ -18,9 +18,18 @@
 
 ---
 
+## Разделение по платформам
+
+| Платформа | Что там живёт | Почему |
+|---|---|---|
+| **Vercel** | Лендинг, Mini App | Статика, бесплатно, CDN |
+| **Beget VPS** | Telegram-бот (Node.js) | Бот должен работать 24/7, российские серверы |
+
+---
+
 ## Единственный компонент, который нужно написать
 
-### Telegram-бот (Node.js + Telegraf)
+### Telegram-бот (Node.js + Telegraf, Beget VPS)
 
 **Что делает:**
 1. Принимает событие `web_app_data` от Mini App
@@ -28,6 +37,8 @@
 3. Форматирует и отправляет сообщение в личку Виктории
 4. Обрабатывает команду `/start` (приветствие + кнопка открыть Mini App)
 5. Обрабатывает `/start from_app` — когда пользователь нажал «Получить скидку 10%» в offer modal
+
+**Режим работы:** polling (`bot.launch()`) — бот сам опрашивает Telegram, webhook не нужен.
 
 **Что НЕ делает:**
 - Не хранит данные в базе
@@ -78,12 +89,12 @@
 
 Бот требует ровно две переменные:
 
-| Переменная | Значение | Где взять |
-|---|---|---|
-| `BOT_TOKEN` | Получить у `@BotFather` → `/mybots` → API Token | Хранить только в `.env` и Vercel Settings |
-| `VICTORIA_CHAT_ID` | `931351685` | Получено через `getUpdates` API |
+| Переменная | Где хранится |
+|---|---|
+| `BOT_TOKEN` | `.env` локально + переменная окружения на Beget VPS |
+| `VICTORIA_CHAT_ID` | `.env` локально + переменная окружения на Beget VPS |
 
-`.env` добавлен в `.gitignore`. В деплой (Railway) передаются через панель управления.
+`.env` добавлен в `.gitignore` — в репозиторий не попадает никогда.
 
 ---
 
@@ -99,55 +110,16 @@
 
 ---
 
-## Где деплоить бота
-
-Бот должен работать **постоянно** (не serverless). Два варианта:
-
-### Вариант A — Railway (рекомендуется для v1)
-
-- Постоянно работающий Node.js процесс
-- Бесплатный стартовый тариф ($5 кредит)
-- Режим: polling (`bot.launch()`) — не нужен webhook
-- Деплой: `git push` → Railway автоматически деплоит из GitHub
-
-**Плюсы:** проще в настройке, не нужен webhook.  
-**Минусы:** нужна банковская карта для регистрации (или GitHub Student).
-
-### Вариант B — Vercel Serverless Function
-
-- Добавить `tg-app/api/webhook.js` в существующий Vercel-проект
-- Режим: webhook — Telegram шлёт POST на `https://vp-brief-bot.vercel.app/api/webhook`
-- Уже есть инфраструктура, деплой автоматический
-
-**Плюсы:** zero cost, уже настроен деплой.  
-**Минусы:** cold start ~1 сек, нужно зарегистрировать webhook через Telegram API.
-
-**Решение:** начать с Vercel (меньше новых сервисов). Перенести на Railway если появятся проблемы с cold start.
-
----
-
-## Файловая структура (Vercel-вариант)
+## Файловая структура бота (на VPS)
 
 ```
-tg-app/
-├── index.html          ← Mini App (уже готов)
-├── vercel.json         ← роуты (обновить)
-├── api/
-│   └── webhook.js      ← Telegraf-бот как serverless function
-└── .env                ← BOT_TOKEN, VICTORIA_CHAT_ID (gitignored)
+bot/
+├── bot.js          ← основной файл бота
+├── package.json    ← зависимость: telegraf
+└── .env            ← BOT_TOKEN, VICTORIA_CHAT_ID (не в git)
 ```
 
-Обновлённый `vercel.json`:
-```json
-{
-  "outputDirectory": ".",
-  "framework": null,
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/(.*)",     "destination": "/index.html" }
-  ]
-}
-```
+На VPS бот запускается через PM2 — менеджер процессов, который автоматически перезапускает бота при сбоях и после перезагрузки сервера.
 
 ---
 
@@ -190,10 +162,11 @@ tg-app/
 
 ## Порядок реализации v1
 
-1. Узнать `VICTORIA_CHAT_ID` через `@userinfobot`
-2. Создать `tg-app/api/webhook.js` с Telegraf
-3. Добавить `package.json` в `tg-app/` с зависимостью `telegraf`
-4. Прописать `BOT_TOKEN` и `VICTORIA_CHAT_ID` в Vercel → Settings → Environment Variables
-5. Задеплоить (автоматически при `git push`)
-6. Зарегистрировать webhook: `GET https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://vp-brief-bot.vercel.app/api/webhook`
-7. Протестировать: пройти бриф в Telegram → убедиться что сообщение пришло
+1. Войти в аккаунт Beget, арендовать минимальный VPS
+2. Написать `bot/bot.js` и `bot/package.json` локально
+3. Загрузить файлы на VPS (через SSH или панель Beget)
+4. Установить зависимости: `npm install`
+5. Прописать `BOT_TOKEN` и `VICTORIA_CHAT_ID` в `.env` на VPS
+6. Запустить бота через PM2: `pm2 start bot.js --name brief-bot`
+7. Настроить автозапуск: `pm2 startup && pm2 save`
+8. Протестировать: пройти бриф в Telegram → убедиться что сообщение пришло
