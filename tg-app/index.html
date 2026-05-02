@@ -635,8 +635,6 @@
       padding: 6px 12px;
     }
 
-    /* Скрываем кастомную кнопку «Назад» внутри Telegram — там есть нативная */
-    body.has-tg .back-btn { display: none; }
   </style>
 </head>
 <body>
@@ -969,7 +967,6 @@
       tg.expand();  // раскрываем на весь экран
     }
 
-    if (hasTg) document.body.classList.add('has-tg');
 
     /* ====================================================
        ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ИЗ TELEGRAM
